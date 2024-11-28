@@ -1,0 +1,3 @@
+SECTION: 1
+PROBLEM: 1
+SOLUTION: example

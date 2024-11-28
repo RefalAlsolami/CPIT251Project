@@ -3,14 +3,15 @@ package Project_CPIT251_Group3_2024;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Project_CPIT251_Group3_2024 {
+import java.io.IOException;
+import java.util.Scanner;
 
+public class Project_CPIT251_Group3_2024 {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         FileHandler fileHandler = new FileHandler();
         Information information = new Information(fileHandler);
-        Admin admin = new Admin(); // Single admin setup
-
+        Admin admin = new Admin("admin1", "password123");
         int choice;
         do {
             // Show menu to the user
@@ -26,27 +27,25 @@ public class Project_CPIT251_Group3_2024 {
 
             switch (choice) {
                 case 1: // Add new information (Admin only)
-                    if (admin.authorize(scanner)) {
-                        
+                    if (authorizeAdmin(scanner, admin)) {
+                        information.addInformation();
                     } else {
                         System.out.println("Authorization failed. You are not allowed to add new information.");
                     }
                     break;
 
                 case 2: // Update a solution (Admin only)
-                    if (admin.authorize(scanner)) {
-                        
-                    } else {
-                        System.out.println("Authorization failed. You are not allowed to update solutions.");
-                    }
+                  
                     break;
 
                 case 3: // Search for information
-                    
+                    System.out.print("Enter a keyword to search: ");
+                    String searchKeyword = scanner.nextLine();
+                    information.search(searchKeyword);
                     break;
 
                 case 4: // Print all information
-                    
+
                     break;
 
                 case 5: // Exit
@@ -60,4 +59,5 @@ public class Project_CPIT251_Group3_2024 {
 
         scanner.close();
     }
+
 }

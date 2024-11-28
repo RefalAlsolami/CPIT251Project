@@ -23,9 +23,18 @@ public class FileHandler {
         }
     }
 
-    // Read all data from the file method
-    
-    // Write all data to the file (overwrites the file) method
-    
-    // Append new data to the file
+     // Read data from the file
+    public List<String> readData() throws IOException {
+        List<String> lines = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        reader.close();
+        return lines;
+    }
+
+    // Write data to the file
+
 }

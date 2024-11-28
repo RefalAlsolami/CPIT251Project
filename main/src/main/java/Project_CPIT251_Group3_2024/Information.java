@@ -15,11 +15,12 @@ public class Information {
      List<String> lines;
 
     // Constructor
-    public Information(FileHandler fileHandler) {
+    public Information(FileHandler fileHandler) throws IOException {
         this.fileHandler = fileHandler;
         this.lines = fileHandler.readData();
     }
     
+     
     // Add new information using append
     public void addInformation() throws IOException {
         Scanner scanner = new Scanner(System.in);
@@ -97,10 +98,40 @@ public class Information {
         lines.add("SOLUTION: " + solution);
     }
  //-----------------------------------------------------------
-    // Update a solution
     
-    // Search for information
+    
+    // Search for a keyword
+    public void search(String keyword) throws IOException {
+        String currentSection = null;
+        String currentProblem = null;
+        String currentSolution = null;
+        boolean found = false;
 
+        for (String line : lines) {
+            if (line.startsWith("SECTION:")) {
+                currentSection = line.substring("SECTION:".length()).trim();
+            } else if (line.startsWith("PROBLEM:")) {
+                currentProblem = line.substring("PROBLEM:".length()).trim();
+            } else if (line.startsWith("SOLUTION:")) {
+                currentSolution = line.substring("SOLUTION:".length()).trim();
+
+                // Check if the keyword exists in the solution
+                if (currentSolution.contains(keyword)) {
+                    System.out.println("SECTION: " + currentSection);
+                    System.out.println("PROBLEM: " + currentProblem);
+                    System.out.println("SOLUTION: " + currentSolution);
+                    System.out.println("-----------------------------------");
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("No matching keyword found in the file.");
+        }
+    }
     // Print all information
-    
+
+        // Update a solution
+
 }
