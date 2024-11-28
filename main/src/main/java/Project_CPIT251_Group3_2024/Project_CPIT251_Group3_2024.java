@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Project_CPIT251_Group3_2024 {
+
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         FileHandler fileHandler = new FileHandler();
@@ -35,7 +36,15 @@ public class Project_CPIT251_Group3_2024 {
                     break;
 
                 case 2: // Update a solution (Admin only)
-                  
+                    if (authorizeAdmin(scanner, admin)) {
+                        try {
+                            information.updateOrDeleteSolution();  // Assuming this method exists in Information
+                        } catch (IOException e) {
+                            System.out.println("An error occurred while updating the solution: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Authorization failed. You are not allowed to update solutions.");
+                    }
                     break;
 
                 case 3: // Search for information
@@ -60,4 +69,11 @@ public class Project_CPIT251_Group3_2024 {
         scanner.close();
     }
 
+    private static boolean authorizeAdmin(Scanner scanner, Admin admin) {
+        System.out.print("Enter Admin Username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter Admin Password: ");
+        String password = scanner.nextLine();
+        return admin.isAdmin(username, password);
+    }
 }
