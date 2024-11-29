@@ -1,6 +1,6 @@
 SECTION: light
 PROBLEM: not working
-SOLUTION: oooooo
+SOLUTION: Call the electrician
 
 SECTION: printer
 PROBLEM: not work
