@@ -56,7 +56,7 @@ public class Project_CPIT251_Group3_2024 {
                     break;
 
                 case 5: // Exit
-                    System.out.println("Exiting... Goodbye!");
+                    System.out.println("Exiting.. Goodbye!");
                     break;
 
                 default:
