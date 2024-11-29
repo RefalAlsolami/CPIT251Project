@@ -3,8 +3,6 @@ package Project_CPIT251_Group3_2024;
 import java.io.IOException;
 import java.util.Scanner;
 
-import java.io.IOException;
-import java.util.Scanner;
 
 public class Project_CPIT251_Group3_2024 {
 
@@ -12,7 +10,7 @@ public class Project_CPIT251_Group3_2024 {
         Scanner scanner = new Scanner(System.in);
         FileHandler fileHandler = new FileHandler();
         Information information = new Information(fileHandler);
-        Admin admin = new Admin("admin1", "password123");
+        Admin admin = new Admin(); // Single admin setup
         int choice;
         do {
             // Show menu to the user
@@ -28,7 +26,7 @@ public class Project_CPIT251_Group3_2024 {
 
             switch (choice) {
                 case 1: // Add new information (Admin only)
-                    if (authorizeAdmin(scanner, admin)) {
+                    if (admin.authorize(scanner)) {
                         information.addInformation();
                     } else {
                         System.out.println("Authorization failed. You are not allowed to add new information.");
@@ -36,7 +34,7 @@ public class Project_CPIT251_Group3_2024 {
                     break;
 
                 case 2: // Update a solution (Admin only)
-                    if (authorizeAdmin(scanner, admin)) {
+                    if (admin.authorize(scanner)) {
                         try {
                             information.updateOrDeleteSolution();  // Assuming this method exists in Information
                         } catch (IOException e) {
@@ -54,7 +52,7 @@ public class Project_CPIT251_Group3_2024 {
                     break;
 
                 case 4: // Print all information
-
+                    information.printAllInformation();
                     break;
 
                 case 5: // Exit
@@ -69,11 +67,4 @@ public class Project_CPIT251_Group3_2024 {
         scanner.close();
     }
 
-    private static boolean authorizeAdmin(Scanner scanner, Admin admin) {
-        System.out.print("Enter Admin Username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter Admin Password: ");
-        String password = scanner.nextLine();
-        return admin.isAdmin(username, password);
-    }
 }

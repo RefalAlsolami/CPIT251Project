@@ -1,15 +1,14 @@
 
 package Project_CPIT251_Group3_2024;
-
 import java.util.Scanner;
 
 public class Admin {
-    
-    private String adminID;
-    private String adminPassword;
+
+    private String adminID = "22";
+    private String adminPassword = "password123";
 
     // Constructor
-    public Admin(String adminID, String adminPassword) {
+    public Admin() {
         this.adminID = adminID;
         this.adminPassword = adminPassword;
     }
@@ -17,5 +16,14 @@ public class Admin {
     // Check if the user is an admin
     public boolean isAdmin(String inputID, String inputPassword) {
         return this.adminID.equals(inputID) && this.adminPassword.equals(inputPassword);
+    }
+
+    // Authorize admin
+    public boolean authorize(Scanner scanner) {
+        System.out.print("Enter Admin Username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter Admin Password: ");
+        String password = scanner.nextLine();
+        return isAdmin(username, password);
     }
 }
