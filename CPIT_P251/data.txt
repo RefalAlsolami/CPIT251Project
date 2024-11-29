@@ -1,0 +1,13 @@
+SECTION: light
+PROBLEM: not working
+SOLUTION: oooooo
+
+SECTION: printer
+PROBLEM: not work
+SOLUTION: you should try again
+PROBLEM: no result
+SOLUTION: try more
+
+SECTION: ink
+PROBLEM: there is no refill
+SOLUTION: talk to admin onuhfi@.com

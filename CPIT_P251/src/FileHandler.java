@@ -23,7 +23,7 @@ public class FileHandler {
     }
 
     // Read all data from the file method
-    
+ 
     // Write all data to the file (overwrites the file) method
       public void writeData(List<String> lines) {
         try {
