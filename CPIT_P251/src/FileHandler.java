@@ -23,7 +23,16 @@ public class FileHandler {
     }
 
     // Read all data from the file method
- 
+    public List<String> readData() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        reader.close();
+        return lines;
+    }
     // Write all data to the file (overwrites the file) method
       public void writeData(List<String> lines) {
         try {

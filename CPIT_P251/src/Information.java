@@ -160,6 +160,37 @@ public class Information {
 
     
     // Search for information
+    public void search(String keyword) throws IOException {
+    String currentSection = null;
+    String currentProblem = null;
+    String currentSolution = null;
+    boolean found = false;
+
+    for (int i = 0; i < lines.size(); i++) {
+        String line = lines.get(i);
+
+        if (line.startsWith("SECTION:")) {
+            currentSection = line.substring("SECTION:".length()).trim();
+        } else if (line.startsWith("PROBLEM:")) {
+            currentProblem = line.substring("PROBLEM:".length()).trim();
+        } else if (line.startsWith("SOLUTION:")) {
+            currentSolution = line.substring("SOLUTION:".length()).trim();
+
+            if (currentSolution.contains(keyword)) {
+                System.out.println("SECTION: " + currentSection);
+                System.out.println("PROBLEM: " + currentProblem);
+                String highlightedSolution = currentSolution.replace(keyword, keyword.toUpperCase());
+                System.out.println("SOLUTION: " + highlightedSolution);
+                System.out.println("-----------------------------------");
+                found = true;
+            }
+        }
+    }
+
+    if (!found) {
+        System.out.println("No matching keyword found in the file.");
+    }
+}
 
     // Print all information
     

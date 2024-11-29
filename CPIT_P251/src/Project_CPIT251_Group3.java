@@ -44,7 +44,7 @@ public class Project_CPIT251_Group3 {
                     }
                     break;
 
-                case 3: // Search for information
+                case 3:
                     System.out.print("Enter a keyword to search: ");
                     String searchKeyword = scanner.nextLine();
                     information.search(searchKeyword);

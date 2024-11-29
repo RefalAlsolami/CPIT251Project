@@ -17,7 +17,6 @@ public class Admin {
     public boolean isAdmin(String inputID, String inputPassword) {
         return this.adminID.equals(inputID) && this.adminPassword.equals(inputPassword);
     }
-
     // Authorize admin
     public boolean authorize(Scanner scanner) {
         System.out.print("Enter Admin Username: ");
