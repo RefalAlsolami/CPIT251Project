@@ -26,7 +26,7 @@ public class Project_CPIT251_Group3 {
             switch (choice) {
                 case 1: // Add new information (Admin only)
                     if (admin.authorize(scanner)) {
-                           information.addInformation();
+                        information.addInformation();
                     } else {
                         System.out.println("Authorization failed. You are not allowed to add new information.");
                     }
@@ -50,7 +50,7 @@ public class Project_CPIT251_Group3 {
                     information.search(searchKeyword);
                     break;
 
-                case 4: // Print all information
+                case 4: // Print all information from the file
                     information.printAllInformation();
                     break;
 

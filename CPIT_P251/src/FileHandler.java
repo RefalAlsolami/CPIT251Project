@@ -1,10 +1,7 @@
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 public class FileHandler {
 
@@ -33,8 +30,9 @@ public class FileHandler {
         reader.close();
         return lines;
     }
+
     // Write all data to the file (overwrites the file) method
-      public void writeData(List<String> lines) {
+    public void writeData(List<String> lines) {
         try {
             FileWriter fileWriter = new FileWriter(fileName, false); // false to overwrite
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -50,7 +48,6 @@ public class FileHandler {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
     }
-    
-    // Append new data to the file
 
+    // Append new data to the file
 }
