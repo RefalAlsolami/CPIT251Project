@@ -25,6 +25,22 @@ public class FileHandler {
     // Read all data from the file method
     
     // Write all data to the file (overwrites the file) method
+      public void writeData(List<String> lines) {
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, false); // false to overwrite
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            for (String line : lines) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine(); // New line for each entry
+            }
+
+            bufferedWriter.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+    }
     
     // Append new data to the file
 

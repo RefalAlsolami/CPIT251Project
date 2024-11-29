@@ -1,5 +1,4 @@
 
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -27,7 +26,7 @@ public class Project_CPIT251_Group3 {
             switch (choice) {
                 case 1: // Add new information (Admin only)
                     if (admin.authorize(scanner)) {
-                        
+
                     } else {
                         System.out.println("Authorization failed. You are not allowed to add new information.");
                     }
@@ -35,18 +34,22 @@ public class Project_CPIT251_Group3 {
 
                 case 2: // Update a solution (Admin only)
                     if (admin.authorize(scanner)) {
-                        
+                        try {
+                            information.updateOrDeleteSolution();  // Assuming this method exists in Information
+                        } catch (IOException e) {
+                            System.out.println("An error occurred while updating the solution: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("Authorization failed. You are not allowed to update solutions.");
                     }
                     break;
 
                 case 3: // Search for information
-                    
+
                     break;
 
                 case 4: // Print all information
-                    
+
                     break;
 
                 case 5: // Exit
