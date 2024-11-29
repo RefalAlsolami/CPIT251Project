@@ -51,7 +51,7 @@ public class Project_CPIT251_Group3 {
                     break;
 
                 case 4: // Print all information
-
+                    information.printAllInformation();
                     break;
 
                 case 5: // Exit

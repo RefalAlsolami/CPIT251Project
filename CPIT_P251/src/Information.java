@@ -193,5 +193,11 @@ public class Information {
 }
 
     // Print all information
+    public void printAllInformation() throws IOException {
+        List<String> lines = fileHandler.readData();
+        for (String line : lines) {
+            System.out.println(line);
+        }
+    }
     
 }
