@@ -1,13 +1,6 @@
 SECTION: light
 PROBLEM: not working
 SOLUTION: Call the electrician
-
 SECTION: printer
-PROBLEM: not work
-SOLUTION: you should try again
-PROBLEM: no result
-SOLUTION: try more
-
-SECTION: ink
-PROBLEM: there is no refill
-SOLUTION: talk to admin onuhfi@.com
+PROBLEM: paper jam
+SOLUTION: Clear the paper path

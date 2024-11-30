@@ -47,7 +47,7 @@ public class Information {
     }
 
     // Helper method: Get and display sections
-    private List<String> getSectionsAndDisplay() {
+    public List<String> getSectionsAndDisplay() {
         List<String> sections = new ArrayList<>();
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -68,7 +68,7 @@ public class Information {
     }
 
     // Append new information to an existing section
-    private void appendToSection() {
+    void appendToSection() {
         System.out.println("Section exists. Appending problem and solution to it.");
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).equals("SECTION: " + section)) {
@@ -84,7 +84,7 @@ public class Information {
     }
 
     // Create a new section
-    private void createNewSection() {
+    public void createNewSection() {
         System.out.println("Section does not exist. Creating a new section.");
         if (!lines.isEmpty()) {
             lines.add(""); // Add spacing between sections
