@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Admin {
 
     private String adminID = "22";
-    private String adminPassword = "password123";
+    private String adminPassword = "123";
 
     // Constructor
     public Admin() {
