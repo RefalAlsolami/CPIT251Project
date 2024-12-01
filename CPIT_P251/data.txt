@@ -1,6 +1,6 @@
 SECTION: light
 PROBLEM: not working
 SOLUTION: Call the electrician
+PROBLEM: aljoharahAloraini
+SOLUTION: a
 SECTION: printer
-PROBLEM: paper jam
-SOLUTION: Clear the paper path

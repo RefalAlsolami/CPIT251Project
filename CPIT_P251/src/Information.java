@@ -96,116 +96,153 @@ public class Information {
     // Update a solution
 
     public void updateOrDeleteSolution() throws IOException {
-
-        // Display existing sections and return list of sections
         List<String> sections = getSectionsAndDisplay();
-
-        // Get admin input for section
         System.out.print("Enter Section: ");
-        String section = scanner.nextLine();
+        section = scanner.nextLine();
 
-        // Validate section existence
         if (!sections.contains(section)) {
             System.out.println("Section does not exist. Please enter a valid section.");
             return;
         }
 
-        // Get admin input for problem
         System.out.print("Enter Problem to modify: ");
-        String problemToModify = scanner.nextLine();
+        String problem = scanner.nextLine();
 
-        // Ask if user wants to update or delete the problem
         System.out.println("Do you want to update or delete the problem? (Enter 'update' or 'delete')");
         String action = scanner.nextLine().toLowerCase();
 
-        // Process based on user decision
+        switch (action) {
+            case "delete":
+                deleteProblem(section, problem);
+                break;
+            case "update":
+                System.out.print("Enter new Solution: ");
+                String newSolution = scanner.nextLine();
+                updateSolution(section, problem, newSolution);
+                break;
+            default:
+                System.out.println("Invalid action. Please enter 'update' or 'delete'.");
+                break;
+        }
+    }
+
+    private void deleteProblem(String section, String problem) throws IOException {
+        List<String> lines = fileHandler.readData();
+        int startIndex = lines.indexOf("SECTION: " + section) + 1;
         boolean isChanged = false;
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).equals("SECTION: " + section)) {
-                i++;
-                while (i < lines.size() && !lines.get(i).startsWith("SECTION:")) {
-                    if (lines.get(i).equals("PROBLEM: " + problemToModify)) {
-                        if (action.equals("delete")) {
-                            // Remove problem and solution
-                            lines.remove(i); // remove problem
-                            lines.remove(i); // remove solution after problem is removed
-                            isChanged = true;
-                            System.out.println("Problem and solution deleted successfully!");
-                        } else if (action.equals("update")) {
-                            // Get new solution and update
-                            System.out.print("Enter new Solution: ");
-                            String newSolution = scanner.nextLine();
-                            lines.set(i + 1, "SOLUTION: " + newSolution);
-                            isChanged = true;
-                            System.out.println("Solution updated successfully!");
-                        }
-                        break;
-                    }
-                    i += 2; // Skip to the next problem within the section
-                }
-            }
-            if (isChanged) {
-                fileHandler.writeData(lines);
+
+        for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
+            String currentProblem = lines.get(i).substring("PROBLEM: ".length());
+            if (isSimilarSimple(currentProblem, problem)) {
+                lines.remove(i);
+                lines.remove(i);
+                isChanged = true;
+                System.out.println("Problem and solution deleted successfully!");
                 break;
             }
         }
 
-        if (!isChanged) {
-            System.out.println("Problem not found. No updates made.");
+        if (isChanged) {
+            fileHandler.writeData(lines);
+        } else {
+            System.out.println("Problem not found.");
         }
     }
 
-    
-     // Search for information
-    public void search(String keyword) throws IOException {
-    String currentSection = null;
-    String currentProblem = null;
-    String currentSolution = null;
-    boolean found = false;
+    private void updateSolution(String section, String problem, String newSolution) throws IOException {
+        List<String> lines = fileHandler.readData();
+        int startIndex = lines.indexOf("SECTION: " + section) + 1;
+        boolean isChanged = false;
 
-    for (int i = 0; i < lines.size(); i++) {
-        String line = lines.get(i);
-
-        if (line.startsWith("SECTION:")) {
-            currentSection = line.substring("SECTION:".length()).trim();
-        } else if (line.startsWith("PROBLEM:")) {
-            currentProblem = line.substring("PROBLEM:".length()).trim();
-        } else if (line.startsWith("SOLUTION:")) {
-            currentSolution = line.substring("SOLUTION:".length()).trim();
-
-            if (currentSection.toLowerCase().contains(keyword.toLowerCase()) ||
-                currentProblem.toLowerCase().contains(keyword.toLowerCase()) ||
-                currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
-
-
-                String highlightedSection = currentSection;
-                if (currentSection.toLowerCase().contains(keyword.toLowerCase())) {
-                    highlightedSection = currentSection.replace(keyword, keyword.toUpperCase());
-                }
-
-                String highlightedProblem = currentProblem;
-                if (currentProblem.toLowerCase().contains(keyword.toLowerCase())) {
-                    highlightedProblem = currentProblem.replace(keyword, keyword.toUpperCase());
-                }
-
-                String highlightedSolution = currentSolution;
-                if (currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
-                    highlightedSolution = currentSolution.replace(keyword, keyword.toUpperCase());
-                }
-
-                System.out.println("SECTION: " + highlightedSection);
-                System.out.println("PROBLEM: " + highlightedProblem);
-                System.out.println("SOLUTION: " + highlightedSolution);
-                System.out.println("-----------------------------------");
-                found = true;
+        for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
+            String currentProblem = lines.get(i).substring("PROBLEM: ".length());
+            if (isSimilarSimple(currentProblem, problem)) {
+                lines.set(i + 1, "SOLUTION: " + newSolution);
+                isChanged = true;
+                System.out.println("Solution updated successfully!");
+                break;
             }
         }
+
+        if (isChanged) {
+            fileHandler.writeData(lines);
+        } else {
+            System.out.println("Problem not found.");
+        }
     }
 
-    if (!found) {
-        System.out.println("No matching keyword found in the file.");
+    private boolean isSimilarSimple(String text1, String text2) {
+        text1 = text1.toLowerCase().trim().replaceAll("\\s+", "");
+        text2 = text2.toLowerCase().trim().replaceAll("\\s+", "");
+
+        // Calculate the minimum length of both strings
+        int minLength = Math.min(text1.length(), text2.length());
+        int maxLength = Math.max(text1.length(), text2.length());
+        int matchCount = 0;
+
+        // Compare each character up to the length of the shorter string
+        for (int i = 0; i < minLength; i++) {
+            if (text1.charAt(i) == text2.charAt(i)) {
+                matchCount++;
+            }
+        }
+
+        // Calculate similarity based on the number of matching characters and the maximum length
+        double similarity = (double) matchCount / maxLength;
+
+        // Return true if the similarity is above a threshold, say 60%
+        return similarity > 0.6;
     }
-}
+
+    // Search for information
+    public void search(String keyword) throws IOException {
+        String currentSection = null;
+        String currentProblem = null;
+        String currentSolution = null;
+        boolean found = false;
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+
+            if (line.startsWith("SECTION:")) {
+                currentSection = line.substring("SECTION:".length()).trim();
+            } else if (line.startsWith("PROBLEM:")) {
+                currentProblem = line.substring("PROBLEM:".length()).trim();
+            } else if (line.startsWith("SOLUTION:")) {
+                currentSolution = line.substring("SOLUTION:".length()).trim();
+
+                if (currentSection.toLowerCase().contains(keyword.toLowerCase())
+                        || currentProblem.toLowerCase().contains(keyword.toLowerCase())
+                        || currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
+
+                    String highlightedSection = currentSection;
+                    if (currentSection.toLowerCase().contains(keyword.toLowerCase())) {
+                        highlightedSection = currentSection.replace(keyword, keyword.toUpperCase());
+                    }
+
+                    String highlightedProblem = currentProblem;
+                    if (currentProblem.toLowerCase().contains(keyword.toLowerCase())) {
+                        highlightedProblem = currentProblem.replace(keyword, keyword.toUpperCase());
+                    }
+
+                    String highlightedSolution = currentSolution;
+                    if (currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
+                        highlightedSolution = currentSolution.replace(keyword, keyword.toUpperCase());
+                    }
+
+                    System.out.println("SECTION: " + highlightedSection);
+                    System.out.println("PROBLEM: " + highlightedProblem);
+                    System.out.println("SOLUTION: " + highlightedSolution);
+                    System.out.println("-----------------------------------");
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("No matching keyword found in the file.");
+        }
+    }
 
     // Print all information from the file
     public void printAllInformation() throws IOException {
