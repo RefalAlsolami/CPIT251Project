@@ -1,11 +1,13 @@
 SECTION: PC
 PROBLEM: Not working
-SOLUTION: Restart the PC
+SOLUTION: restart the pc
 PROBLEM: Slow performance
 SOLUTION: Run a disk cleanup and uninstall unused programs
 PROBLEM: Blue screen error
 SOLUTION: Update the drivers and check for hardware issues
 
+PROBLEM: not working
+SOLUTION: restart the pc
 SECTION: Email
 PROBLEM: Not receiving emails
 SOLUTION: Check spam folder and inbox storage

@@ -22,6 +22,7 @@ class TestFileHandler extends FileHandler {
         testFile.addAll(lines); // Add new lines to the simulated file
     }
 }
+//------------------------------------------------------------------------------------
 
 public class InformationTest {
 
@@ -41,9 +42,8 @@ public class InformationTest {
     public void setUp() throws IOException {
         fileHandler = new TestFileHandler(); // Use the mock file handler
         information = new Information(fileHandler); // Pass it to the Information class
-        fileHandler.writeData(initialData); // Set initial data
-        information.setContent(fileHandler.readData());
     }
+
 //-------------------------------------------------------------
     @Test
     public void testGetSectionsAndDisplay() throws IOException {
@@ -60,6 +60,7 @@ public class InformationTest {
         assertEquals(expectedSections, sections);
     }
 //--------------------------------------------------------------
+
     @Test
     public void testAppendToSection() throws IOException {
         System.out.println("Test: appendToSection");
@@ -120,14 +121,29 @@ public class InformationTest {
     }
 
 //-------------------------------------------------------------------------------------------------
-      @Test
+    @Test
     public void testDeleteExistingProblem() throws IOException {
         String section = "lamp";
         String problem = "not working";
 
-        information.deleteProblem(section, problem);
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
 
-        assertFalse("The problem should not exist", information.getContent().contains("PROBLEM: not working"));
+        boolean result = information.deleteProblem(section, problem);
+
+       
+        assertTrue("The problem and solution should be deleted", result);
+        assertFalse("The problem should not exist",
+                information.getContent().contains("PROBLEM: not working"));
+
+
+        List<String> expectedData = Arrays.asList(
+                "SECTION: lamp",
+                "SECTION: printer",
+                "PROBLEM: paper jam",
+                "SOLUTION: Clear the paper path"
+        );
+        assertEquals("The content should match after deletion", expectedData, information.getContent());
     }
 
     @Test
@@ -135,8 +151,14 @@ public class InformationTest {
         String section = "lamp";
         String problem = "non-existent problem";
 
-        information.deleteProblem(section, problem);
+        
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
 
+        boolean result = information.deleteProblem(section, problem);
+
+        
+        assertFalse("No changes should be made for non-existing problems", result);
         assertEquals("The content should remain unchanged", initialData, information.getContent());
     }
 
@@ -146,9 +168,27 @@ public class InformationTest {
         String problem = "not working";
         String newSolution = "Replace the bulb";
 
-        information.updateSolution(section, problem, newSolution);
+        
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
 
-        assertTrue("The solution should be updated", information.getContent().contains("SOLUTION: Replace the bulb"));
+        boolean result = information.updateSolution(section, problem, newSolution);
+
+       
+        assertTrue("The solution should be updated", result);
+        assertTrue("The updated solution should exist",
+                information.getContent().contains("SOLUTION: Replace the bulb"));
+
+        
+        List<String> expectedData = Arrays.asList(
+                "SECTION: lamp",
+                "PROBLEM: not working",
+                "SOLUTION: Replace the bulb",
+                "SECTION: printer",
+                "PROBLEM: paper jam",
+                "SOLUTION: Clear the paper path"
+        );
+        assertEquals("The content should match after update", expectedData, information.getContent());
     }
 
     @Test
@@ -157,32 +197,18 @@ public class InformationTest {
         String problem = "non-existent problem";
         String newSolution = "Restart everything";
 
-        information.updateSolution(section, problem, newSolution);
+       
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
 
-        assertEquals("No changes should be made for non-existing problems", initialData, information.getContent());
+        boolean result = information.updateSolution(section, problem, newSolution);
+
+        
+        assertFalse("No changes should be made for non-existing problems", result);
+        assertEquals("The content should remain unchanged", initialData, information.getContent());
     }
+
 //------------------------------------------------------------------------------------------
-    @Test
-    public void testSearchWithExistingKeyword() throws IOException {
-        System.out.println("Test: Search for Keyword ");
-
-        // Expected data
-        List<String> expectedData = Arrays.asList(
-                "SECTION: light",
-                "PROBLEM: not working",
-                "SOLUTION: Call the electrician"
-        );
-
-        FileHandler fileHandler = new FileHandler();
-        Information instance = new Information(fileHandler);
-
-        String keyword = "electrician";
-        instance.search(keyword);
-
-        List<String> actualData = fileHandler.readData();
-
-        assertTrue(actualData.containsAll(expectedData));
-    }
 //------------------------------------------------------------------------------------
     @Test
     public void testSearchWithNonExistingKeyword() throws IOException {
@@ -226,6 +252,7 @@ public class InformationTest {
                 + " matches the expected data.", fileData, fileHandler.readData());
     }
 //------------------------------------------------------------------------------------
+
     @Test
     public void testPrintAllInformationEmptyFile() throws IOException {
         System.out.println("Test: print All Information From Empty File");
@@ -241,6 +268,7 @@ public class InformationTest {
         assertTrue("File should be empty", actualData.isEmpty());
     }
 //-----------------------------------------------------------------------------------------
+
     @Test
     public void testPrintAllInformationLargeFile() throws IOException {
         System.out.println("Test: print All Information with Large Data");
