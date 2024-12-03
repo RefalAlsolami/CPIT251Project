@@ -1,18 +1,33 @@
-SECTION: light
-SECTION: printer
+SECTION: PC
+PROBLEM: Not working
+SOLUTION: Restart the PC
+PROBLEM: Slow performance
+SOLUTION: Run a disk cleanup and uninstall unused programs
+PROBLEM: Blue screen error
+SOLUTION: Update the drivers and check for hardware issues
 
-SECTION: ligh
-PROBLEM: nopefeprowpf weofnef woendekf oefejrf wenfkjerf kef
-SOLUTION: sdferf efw wefoief erfiw ffejfn frnrof wpef rofkjw pe wokf w
+SECTION: Email
+PROBLEM: Not receiving emails
+SOLUTION: Check spam folder and inbox storage
 
-SECTION: screen
-PROBLEM: badsprofmedrgeprgmt
-SOLUTION: ergtpomgproooooooostp woi5gmprig oig
-PROBLEM: lergneg weflmwef wepofme
-SOLUTION: e felkrferf elke rf f
+SECTION: Printer
+PROBLEM: Paper jam
+SOLUTION: Remove jammed paper and reset the printer
+PROBLEM: Low ink
+SOLUTION: Replace the ink cartridge
 
-PROBLEM: nothin workkkk
-SOLUTION: edd vr 
-SECTION: PrieR
-PROBLEM: dwsedfe wlefkef wlefnef wlkefl 
-SOLUTION: eded
+SECTION: Network
+PROBLEM: No internet connection
+SOLUTION: Restart the router and check cables
+PROBLEM: Slow connection
+SOLUTION: Contact your ISP for support
+
+SECTION: Keyboard
+PROBLEM: Keys not responding
+SOLUTION: Reconnect the keyboard and clean underneath the keys
+PROBLEM: Wrong characters appearing
+SOLUTION: Check the language settings and keyboard layout
+
+SECTION: Monitor
+PROBLEM: No display
+SOLUTION: Try another cable or monitor 
