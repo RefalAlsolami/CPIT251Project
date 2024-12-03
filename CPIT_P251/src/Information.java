@@ -218,9 +218,9 @@ public class Information {
         // Return true if the similarity is above a threshold, say 60%
         return similarity > 0.6;
     }
+
     //------------------------------------------------------------------------------------
     // Search for information
-
     public void search(String keyword) throws IOException {
         String currentSection = null;
         String currentProblem = null;
@@ -237,28 +237,12 @@ public class Information {
             } else if (line.startsWith("SOLUTION:")) {
                 currentSolution = line.substring("SOLUTION:".length()).trim();
 
-                if (currentSection.toLowerCase().contains(keyword.toLowerCase())
-                        || currentProblem.toLowerCase().contains(keyword.toLowerCase())
-                        || currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
-
-                    String highlightedSection = currentSection;
-                    if (currentSection.toLowerCase().contains(keyword.toLowerCase())) {
-                        highlightedSection = currentSection.replace(keyword, keyword.toUpperCase());
-                    }
-
-                    String highlightedProblem = currentProblem;
-                    if (currentProblem.toLowerCase().contains(keyword.toLowerCase())) {
-                        highlightedProblem = currentProblem.replace(keyword, keyword.toUpperCase());
-                    }
-
-                    String highlightedSolution = currentSolution;
-                    if (currentSolution.toLowerCase().contains(keyword.toLowerCase())) {
-                        highlightedSolution = currentSolution.replace(keyword, keyword.toUpperCase());
-                    }
-
-                    System.out.println("SECTION: " + highlightedSection);
-                    System.out.println("PROBLEM: " + highlightedProblem);
-                    System.out.println("SOLUTION: " + highlightedSolution);
+                if (containsKeyword(currentSection, keyword)
+                        || containsKeyword(currentProblem, keyword)
+                        || containsKeyword(currentSolution, keyword)) {
+                    System.out.println("SECTION: " + highlightKeyword(currentSection, keyword));
+                    System.out.println("PROBLEM: " + highlightKeyword(currentProblem, keyword));
+                    System.out.println("SOLUTION: " + highlightKeyword(currentSolution, keyword));
                     System.out.println("-----------------------------------");
                     found = true;
                 }
@@ -269,6 +253,42 @@ public class Information {
             System.out.println("No matching keyword found in the file.");
         }
     }
+
+    // check if the keyword is in the text (case-insensitive)
+    private boolean containsKeyword(String text, String keyword) {
+        return text != null && text.toLowerCase().contains(keyword.toLowerCase());
+    }
+
+    //highlight the keyword in the text
+    private String highlightKeyword(String text, String keyword) {
+        if (text == null) {
+            return "";
+        }
+        String lowerText = text.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase();
+
+        StringBuilder highlightedText = new StringBuilder();
+        int index = 0;
+
+        while (index < text.length()) {
+            int keywordStart = lowerText.indexOf(lowerKeyword, index);
+            if (keywordStart == -1) {
+                // Append the remaining part of the text
+                highlightedText.append(text.substring(index));
+                break;
+            }
+
+            // Append text before the keyword
+            highlightedText.append(text.substring(index, keywordStart));
+            // Append the highlighted keyword
+            highlightedText.append(keyword.toUpperCase());
+            // Move the index to after the keyword
+            index = keywordStart + keyword.length();
+        }
+
+        return highlightedText.toString();
+    }
+    
     //------------------------------------------------------------------------------------
     // Print all information from the file
 
