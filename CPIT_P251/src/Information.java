@@ -138,12 +138,20 @@ public class Information {
 
         switch (action) {
             case "delete":
-                deleteProblem(section, problem);
+                if (deleteProblem(section, problem)) {
+                    System.out.println("Problem and solution deleted successfully!");
+                } else {
+                    System.out.println("Problem not found. Deletion failed.");
+                }
                 break;
             case "update":
                 System.out.print("Enter new Solution: ");
                 String newSolution = scanner.nextLine();
-                updateSolution(section, problem, newSolution);
+                if (updateSolution(section, problem, newSolution)) {
+                    System.out.println("Solution updated successfully!");
+                } else {
+                    System.out.println("Problem not found. Update failed.");
+                }
                 break;
             default:
                 System.out.println("Invalid action. Please enter 'update' or 'delete'.");
@@ -151,52 +159,60 @@ public class Information {
         }
     }
 
-    private void deleteProblem(String section, String problem) throws IOException {
-        List<String> lines = fileHandler.readData();
-        int startIndex = lines.indexOf("SECTION: " + section) + 1;
-        boolean isChanged = false;
+    public boolean deleteProblem(String section, String problem) throws IOException {
+        int sectionIndex = content.indexOf("SECTION: " + section);
+        if (sectionIndex == -1) {
+            return false; // Section not found
+        }
 
-        for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
-            String currentProblem = lines.get(i).substring("PROBLEM: ".length());
-            if (isSimilar(currentProblem, problem)) {
-                lines.remove(i);
-                lines.remove(i);
-                isChanged = true;
-                System.out.println("Problem and solution deleted successfully!");
-                break;
+        boolean isChanged = false;
+        for (int i = sectionIndex + 1; i < content.size() && !content.get(i).startsWith("SECTION:"); i++) {
+            if (content.get(i).startsWith("PROBLEM: ")) {
+                String currentProblem = content.get(i).substring("PROBLEM: ".length()).trim();
+                if (isSimilar(currentProblem, problem)) {
+                    content.remove(i); // Remove problem
+                    if (i < content.size() && content.get(i).startsWith("SOLUTION:")) {
+                        content.remove(i); // Remove corresponding solution
+                    }
+                    isChanged = true;
+                    break;
+                }
             }
         }
 
         if (isChanged) {
-            fileHandler.writeData(lines);
-        } else {
-            System.out.println("Problem not found.");
+            fileHandler.writeData(content);
         }
+        return isChanged;
     }
 
-    void updateSolution(String section, String problem, String newSolution) throws IOException {
-        List<String> lines = fileHandler.readData();
-        int startIndex = lines.indexOf("SECTION: " + section) + 1;
-        boolean isChanged = false;
+    public boolean updateSolution(String section, String problem, String newSolution) throws IOException {
+        int sectionIndex = content.indexOf("SECTION: " + section);
+        if (sectionIndex == -1) {
+            return false; // Section not found
+        }
 
-        for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
-            String currentProblem = lines.get(i).substring("PROBLEM: ".length());
-            if (isSimilar(currentProblem, problem)) {
-                lines.set(i + 1, "SOLUTION: " + newSolution);
-                isChanged = true;
-                System.out.println("Solution updated successfully!");
-                break;
+        boolean isChanged = false;
+        for (int i = sectionIndex + 1; i < content.size() && !content.get(i).startsWith("SECTION:"); i++) {
+            if (content.get(i).startsWith("PROBLEM: ")) {
+                String currentProblem = content.get(i).substring("PROBLEM: ".length()).trim();
+                if (isSimilar(currentProblem, problem)) {
+                    if (i + 1 < content.size() && content.get(i + 1).startsWith("SOLUTION:")) {
+                        content.set(i + 1, "SOLUTION: " + newSolution); // Update solution
+                        isChanged = true;
+                        break;
+                    }
+                }
             }
         }
 
         if (isChanged) {
-            fileHandler.writeData(lines);
-        } else {
-            System.out.println("Problem not found.");
+            fileHandler.writeData(content);
         }
+        return isChanged;
     }
 
-    private boolean isSimilar(String text1, String text2) {
+    public boolean isSimilar(String text1, String text2) {
         text1 = text1.toLowerCase().trim().replaceAll("\\s+", "");
         text2 = text2.toLowerCase().trim().replaceAll("\\s+", "");
 
@@ -288,10 +304,9 @@ public class Information {
 
         return highlightedText.toString();
     }
-    
+
     //------------------------------------------------------------------------------------
     // Print all information from the file
-
     public void printAllInformation() throws IOException {
         // Check if the file is empty
         if (content.isEmpty()) {
