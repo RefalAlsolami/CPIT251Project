@@ -22,7 +22,7 @@ class TestFileHandler extends FileHandler {
         testFile.addAll(lines); // Add new lines to the simulated file
     }
 }
-//------------------------------------------------------------------------------------
+
 public class InformationTest {
 
     FileHandler fileHandler;
@@ -41,6 +41,8 @@ public class InformationTest {
     public void setUp() throws IOException {
         fileHandler = new TestFileHandler(); // Use the mock file handler
         information = new Information(fileHandler); // Pass it to the Information class
+        fileHandler.writeData(initialData); // Set initial data
+        information.setContent(fileHandler.readData());
     }
 //-------------------------------------------------------------
     @Test
@@ -118,9 +120,46 @@ public class InformationTest {
     }
 
 //-------------------------------------------------------------------------------------------------
-    @Test
-    public void testUpdateOrDeleteSolution() throws Exception {
+      @Test
+    public void testDeleteExistingProblem() throws IOException {
+        String section = "lamp";
+        String problem = "not working";
 
+        information.deleteProblem(section, problem);
+
+        assertFalse("The problem should not exist", information.getContent().contains("PROBLEM: not working"));
+    }
+
+    @Test
+    public void testDeleteNonExistingProblem() throws IOException {
+        String section = "lamp";
+        String problem = "non-existent problem";
+
+        information.deleteProblem(section, problem);
+
+        assertEquals("The content should remain unchanged", initialData, information.getContent());
+    }
+
+    @Test
+    public void testUpdateExistingSolution() throws IOException {
+        String section = "lamp";
+        String problem = "not working";
+        String newSolution = "Replace the bulb";
+
+        information.updateSolution(section, problem, newSolution);
+
+        assertTrue("The solution should be updated", information.getContent().contains("SOLUTION: Replace the bulb"));
+    }
+
+    @Test
+    public void testUpdateNonExistingProblem() throws IOException {
+        String section = "lamp";
+        String problem = "non-existent problem";
+        String newSolution = "Restart everything";
+
+        information.updateSolution(section, problem, newSolution);
+
+        assertEquals("No changes should be made for non-existing problems", initialData, information.getContent());
     }
 //------------------------------------------------------------------------------------------
     @Test
