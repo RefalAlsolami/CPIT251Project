@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 class TestFileHandler extends FileHandler {
+
     List<String> testFile = new ArrayList<>(); // Simulate the file content
 
     @Override
@@ -24,75 +24,75 @@ class TestFileHandler extends FileHandler {
 }
 //------------------------------------------------------------------------------------
 public class InformationTest {
+
     FileHandler fileHandler;
     Information information;
-    
-       List<String> initialData = Arrays.asList(
-        "SECTION: lamp",
-        "PROBLEM: not working",
-        "SOLUTION: Call the electrician",
-        "SECTION: printer",
-        "PROBLEM: paper jam",
-        "SOLUTION: Clear the paper path"
+
+    List<String> initialData = Arrays.asList(
+            "SECTION: lamp",
+            "PROBLEM: not working",
+            "SOLUTION: Call the electrician",
+            "SECTION: printer",
+            "PROBLEM: paper jam",
+            "SOLUTION: Clear the paper path"
     );
-    
-   @Before
- public void setUp() throws IOException {
-    fileHandler = new TestFileHandler(); // Use the mock file handler
-    information = new Information(fileHandler); // Pass it to the Information class
-}
+
+    @Before
+    public void setUp() throws IOException {
+        fileHandler = new TestFileHandler(); // Use the mock file handler
+        information = new Information(fileHandler); // Pass it to the Information class
+    }
 //-------------------------------------------------------------
-@Test
-public void testGetSectionsAndDisplay() throws IOException {
-    System.out.println("Test: getSectionsAndDisplay");
+    @Test
+    public void testGetSectionsAndDisplay() throws IOException {
+        System.out.println("Test: getSectionsAndDisplay");
 
-    fileHandler.writeData(initialData);
+        fileHandler.writeData(initialData);
 
-    // Reload lines in the existing Information instance
-    information.setContent(fileHandler.readData()); 
+        // Reload lines in the existing Information instance
+        information.setContent(fileHandler.readData());
 
-    // Test the method
-    List<String> sections = information.getSectionsAndDisplay();
-    List<String> expectedSections = Arrays.asList("lamp", "printer");
-    assertEquals(expectedSections, sections);
-}
+        // Test the method
+        List<String> sections = information.getSectionsAndDisplay();
+        List<String> expectedSections = Arrays.asList("lamp", "printer");
+        assertEquals(expectedSections, sections);
+    }
 //--------------------------------------------------------------
+    @Test
+    public void testAppendToSection() throws IOException {
+        System.out.println("Test: appendToSection");
+        fileHandler.writeData(initialData);
 
-@Test
-public void testAppendToSection() throws IOException {
-    System.out.println("Test: appendToSection");
-    fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
+        information.setSection("lamp"); // Existing section
+        information.setProblem("flickering");
+        information.setSolution("Check and tighten the bulb");
 
-    information.setContent(fileHandler.readData());
-    information.setSection("lamp"); // Existing section
-    information.setProblem("flickering");
-    information.setSolution("Check and tighten the bulb"); 
+        // Call appendToSection
+        information.appendToSection();
 
-    // Call appendToSection
-    information.appendToSection();
+        // Expected data after appending
+        List<String> expectedData = Arrays.asList(
+                "SECTION: lamp",
+                "PROBLEM: not working",
+                "SOLUTION: Call the electrician",
+                "PROBLEM: flickering",
+                "SOLUTION: Check and tighten the bulb",
+                "SECTION: printer",
+                "PROBLEM: paper jam",
+                "SOLUTION: Clear the paper path"
+        );
 
-    // Expected data after appending
-    List<String> expectedData = Arrays.asList(
-        "SECTION: lamp",
-        "PROBLEM: not working",
-        "SOLUTION: Call the electrician",
-        "PROBLEM: flickering",
-        "SOLUTION: Check and tighten the bulb",
-        "SECTION: printer",
-        "PROBLEM: paper jam",
-        "SOLUTION: Clear the paper path"
-    );
-
-    // Verify that the lines now match the expected result
-    List<String> actualData = information.getContent(); // Use the `lines` field directly
-    assertEquals(expectedData, actualData);
-}
+        // Verify that the lines now match the expected result
+        List<String> actualData = information.getContent(); // Use the `lines` field directly
+        assertEquals(expectedData, actualData);
+    }
 
 //-------------------------------------------------------------------------------
     @Test
     public void testCreateNewSection() throws IOException {
         System.out.println("Test: createNewSection");
-     
+
         information.setContent(fileHandler.readData());
         information.setSection("prin");
         information.setProblem("paper jam");
@@ -104,18 +104,18 @@ public void testAppendToSection() throws IOException {
                 "SOLUTION: Clear the paper path"
         );
         List<String> actualLines = information.getContent();
-        assertEquals( expectedLines, actualLines);
+        assertEquals(expectedLines, actualLines);
     }
+
     //--------------------------------------------------------------
     @Test
-public void testFindMatchingSectionNoMatch() {
-    List<String> sections = Arrays.asList("lamp", "printer", "router");
-    String inputSection = "monitor";
+    public void testFindMatchingSectionNoMatch() {
+        List<String> sections = Arrays.asList("lamp", "printer", "router");
+        String inputSection = "monitor";
 
-    String matchedSection = information.findMatchingSection(sections, inputSection);
-    assertNull(matchedSection); // Ensure no match is found
-}
-
+        String matchedSection = information.findMatchingSection(sections, inputSection);
+        assertNull(matchedSection); // Ensure no match is found
+    }
 
 //-------------------------------------------------------------------------------------------------
     @Test
@@ -123,7 +123,6 @@ public void testFindMatchingSectionNoMatch() {
 
     }
 //------------------------------------------------------------------------------------------
-
     @Test
     public void testSearchWithExistingKeyword() throws IOException {
         System.out.println("Test: Search for Keyword ");
@@ -145,7 +144,7 @@ public void testFindMatchingSectionNoMatch() {
 
         assertTrue(actualData.containsAll(expectedData));
     }
-
+//------------------------------------------------------------------------------------
     @Test
     public void testSearchWithNonExistingKeyword() throws IOException {
         System.out.println("Test: Search with non-existing Keyword");
@@ -168,52 +167,59 @@ public void testFindMatchingSectionNoMatch() {
     }
 
 //-----------------------------------------------------------------------------------------
-    //testPrintAllInformation()
     @Test
     public void testPrintAllInformation() throws IOException {
-        System.out.println("Test: printAllInformation from File (data.txt)");
+        System.out.println("Test: printAllInformation");
 
-        // Expected data (manually define expected content from the file)
-        List<String> expectedData = Arrays.asList(
-                "SECTION: light",
+        // Step 1: Write data to the mock file handler
+        List<String> fileData = Arrays.asList(
+                "SECTION: PC",
                 "PROBLEM: not working",
-                "SOLUTION: Call the electrician"
+                "SOLUTION: Restart the pc"
         );
+        fileHandler.writeData(fileData);
 
-        // Create an instance of Information using the actual FileHandler
-        FileHandler fileHandler = new FileHandler(); // Create a real FileHandler
-        Information instance = new Information(fileHandler); // Pass it to Information
+        // Step 2: Call the method to test
+        information.printAllInformation();
 
-        // Read actual data from the file
-        List<String> actualData = fileHandler.readData(); // Read data from the file
-
-        // Assert that the file contains all expected data
-        assertTrue(actualData.containsAll(expectedData));
+        // Step 3: Verify that the data in the file matches the expected data
+        assertEquals("printAllInformation executed successfully and the file content"
+                + " matches the expected data.", fileData, fileHandler.readData());
     }
-
+//------------------------------------------------------------------------------------
     @Test
     public void testPrintAllInformationEmptyFile() throws IOException {
-        System.out.println("Test: printAllInformation (Empty File)");
+        System.out.println("Test: print All Information From Empty File");
 
-        // Simulate an empty file by creating an empty FileHandler
-        FileHandler fileHandler = new FileHandler() {
-            @Override
-            public List<String> readData() {
-                return Arrays.asList(); // Return an empty list to simulate an empty file
-            }
-        };
+        // Step 1: Write an empty list to the mock file handler to simulate an empty file
+        fileHandler.writeData(new ArrayList<>());
 
-        // Create an instance of Information using the mock FileHandler
-        Information instance = new Information(fileHandler);
+        // Step 2: Call the method to test
+        information.printAllInformation();
 
-        // Read actual data from the (empty) file
+        // Step 3: Verify that the file is indeed empty
         List<String> actualData = fileHandler.readData();
+        assertTrue("File should be empty", actualData.isEmpty());
+    }
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testPrintAllInformationLargeFile() throws IOException {
+        System.out.println("Test: print All Information with Large Data");
 
-        // Expected data (empty list)
-        List<String> expectedData = Arrays.asList();
+        // Generate a large dataset
+        List<String> largeFileData = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            largeFileData.add("SECTION: Section " + i);
+            largeFileData.add("PROBLEM: Issue " + i);
+            largeFileData.add("SOLUTION: Solution " + i);
+        }
+        fileHandler.writeData(largeFileData);
 
-        // Assert that the file is empty
-        assertEquals(expectedData, actualData);
+        // Call the method to test
+        information.printAllInformation();
+
+        // Verify that the data in the file matches the large dataset
+        assertEquals("The file content should match the large dataset.", largeFileData, fileHandler.readData());
     }
 
 }

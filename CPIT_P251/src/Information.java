@@ -6,48 +6,59 @@ import java.util.Scanner;
 
 public class Information {
 
-   private FileHandler fileHandler;
-   private String section;
-   private String problem;
-   private String solution;
-   private List<String> content;
+    private FileHandler fileHandler;
+    private String section;
+    private String problem;
+    private String solution;
+    private List<String> content;
     Scanner scanner;
 
     // Constructorlines
- public Information(FileHandler fileHandler) throws IOException {
+    public Information(FileHandler fileHandler) throws IOException {
         this.fileHandler = fileHandler;
         this.content = fileHandler.readData();
         scanner = new Scanner(System.in);
     }
-    
-    
-    
+    //------------------------------------------------------------------------------------
+    //Add Information
+
     public void addInformation() throws IOException {
-    // Display existing sections
-    List<String> sections = getSectionsAndDisplay();
+        // Display existing sections
+        List<String> sections = getSectionsAndDisplay();
 
-    // Collect user input
-    collectUserInput();
+        // Collect user input 
+        collectUserInput();
 
-    // Check for similar section
-    String matchedSection = findMatchingSection(sections, section);
+        // Check for similar section
+        String matchedSection = findMatchingSection(sections, section);
 
-    // Use the matched section if found, otherwise create a new section
-    if (matchedSection != null) {
-        System.out.println("Section found: " + matchedSection);
-        section = matchedSection; // Use the matched section name
-        appendToSection();
-    } else {
-        System.out.println("No similar section found. Creating a new section.");
-        createNewSection();
+        // Use the matched section if found, otherwise create a new section
+        if (matchedSection != null) {
+            System.out.println("Section found: " + matchedSection);
+            section = matchedSection; // Use the matched section name
+            appendToSection();
+        } else {
+            System.out.println("No similar section found. Creating a new section.");
+            createNewSection();
+        }
+
+        // Write updated content back to the file
+        fileHandler.writeData(content);
+        System.out.println("Information added successfully!");
     }
 
-    // Write updated content back to the file
-    fileHandler.writeData(content);
-    System.out.println("Information added successfully!");
-}
- //---------------------------------------------------------------
-     //Get and display sections
+    //---------------------------------------------------------------
+    public void collectUserInput() {
+        System.out.print("Enter Section: ");
+        section = scanner.nextLine();
+        System.out.print("Enter Problem: ");
+        problem = scanner.nextLine();
+        System.out.print("Enter Solution: ");
+        solution = scanner.nextLine();
+    }
+    //---------------------------------------------------------------
+    //Get and display sections
+
     public List<String> getSectionsAndDisplay() {
         List<String> sections = new ArrayList<>();
         for (int i = 0; i < content.size(); i++) {
@@ -67,29 +78,20 @@ public class Information {
 
         return sections;
     }
-//--------------------------------------------------------------------
-    public void collectUserInput() {
-    System.out.print("Enter Section: ");
-    section = scanner.nextLine();
-    System.out.print("Enter Problem: ");
-    problem = scanner.nextLine();
-    System.out.print("Enter Solution: ");
-    solution = scanner.nextLine();
-}
-  //------------------------------------------------------------  
-    
-    
-public String findMatchingSection(List<String> sections, String inputSection) {
-    for (int i = 0; i < sections.size(); i++) {
-        String existingSection = sections.get(i); 
-        if (isSimilar(existingSection, inputSection)) {
-            return existingSection; // Return the matching section
+
+    //------------------------------------------------------------  
+    public String findMatchingSection(List<String> sections, String inputSection) {
+        for (int i = 0; i < sections.size(); i++) {
+            String existingSection = sections.get(i);
+            if (isSimilar(existingSection, inputSection)) {
+                return existingSection; // Return the matching section
+            }
         }
+        return null; // No match found
     }
-    return null; // No match found
-} 
-//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     // Append new information to an existing section
+
     public void appendToSection() {
         for (int i = 0; i < content.size(); i++) {
             if (content.get(i).equals("SECTION: " + section)) {
@@ -103,8 +105,9 @@ public String findMatchingSection(List<String> sections, String inputSection) {
             }
         }
     }
-//----------------------------------------------------------------------
+    //----------------------------------------------------------------------
     // Create a new section
+
     public void createNewSection() {
         System.out.println("Section does not exist. Creating a new section.");
         if (!content.isEmpty()) {
@@ -114,8 +117,8 @@ public String findMatchingSection(List<String> sections, String inputSection) {
         content.add("PROBLEM: " + problem);
         content.add("SOLUTION: " + solution);
     }
-//------------------------------------------------------------------------
-    // Update a solution
+    //------------------------------------------------------------------------
+    // Update and Delete Information
 
     public void updateOrDeleteSolution() throws IOException {
         List<String> sections = getSectionsAndDisplay();
@@ -171,7 +174,7 @@ public String findMatchingSection(List<String> sections, String inputSection) {
         }
     }
 
-    private void updateSolution(String section, String problem, String newSolution) throws IOException {
+    void updateSolution(String section, String problem, String newSolution) throws IOException {
         List<String> lines = fileHandler.readData();
         int startIndex = lines.indexOf("SECTION: " + section) + 1;
         boolean isChanged = false;
@@ -215,8 +218,9 @@ public String findMatchingSection(List<String> sections, String inputSection) {
         // Return true if the similarity is above a threshold, say 60%
         return similarity > 0.6;
     }
-
+    //------------------------------------------------------------------------------------
     // Search for information
+
     public void search(String keyword) throws IOException {
         String currentSection = null;
         String currentProblem = null;
@@ -265,16 +269,24 @@ public String findMatchingSection(List<String> sections, String inputSection) {
             System.out.println("No matching keyword found in the file.");
         }
     }
-
+    //------------------------------------------------------------------------------------
     // Print all information from the file
+
     public void printAllInformation() throws IOException {
-        List<String> lines = fileHandler.readData();
-        for (String line : lines) {
-            System.out.println(line);
+        // Check if the file is empty
+        if (content.isEmpty()) {
+            System.out.println("The file is empty. No information available to display.");
+        } else {
+            // Print all lines if the file is not empty
+            for (String line : content) {
+                System.out.println(line);
+            }
         }
     }
+    //------------------------------------------------------------------------------------
+    //Getter-Setter Methods
 
-  public FileHandler getFileHandler() {
+    public FileHandler getFileHandler() {
         return fileHandler;
     }
 
@@ -320,5 +332,5 @@ public String findMatchingSection(List<String> sections, String inputSection) {
 
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
-    }  
+    }
 }

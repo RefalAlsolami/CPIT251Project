@@ -49,5 +49,4 @@ public class FileHandler {
         }
     }
 
-    // Append new data to the file
 }

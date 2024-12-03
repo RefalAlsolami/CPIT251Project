@@ -19,7 +19,7 @@ public class Admin {
 
     // Authorize admin
     public boolean authorize(Scanner scanner) {
-        System.out.print("Enter Admin Username: ");
+        System.out.print("Enter Admin User name: ");
         String username = scanner.nextLine();
         System.out.print("Enter Admin Password: ");
         String password = scanner.nextLine();
