@@ -18,17 +18,16 @@ public class FileHandler {
             System.err.println("Error initializing the file: " + e.getMessage());
         }
     }
-
     // Read all data from the file method
     public List<String> readData() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        List<String> lines = new ArrayList<>();
+        List<String> content = new ArrayList<>();
         String line;
         while ((line = reader.readLine()) != null) {
-            lines.add(line);
+            content.add(line);
         }
         reader.close();
-        return lines;
+        return content;
     }
 
     // Write all data to the file (overwrites the file) method
