@@ -1,6 +1,18 @@
 SECTION: light
-PROBLEM: not working
-SOLUTION: Call the electrician
-PROBLEM: aljoharahAloraini
-SOLUTION: a
 SECTION: printer
+
+SECTION: ligh
+PROBLEM: nopefeprowpf weofnef woendekf oefejrf wenfkjerf kef
+SOLUTION: sdferf efw wefoief erfiw ffejfn frnrof wpef rofkjw pe wokf w
+
+SECTION: screen
+PROBLEM: badsprofmedrgeprgmt
+SOLUTION: ergtpomgproooooooostp woi5gmprig oig
+PROBLEM: lergneg weflmwef wepofme
+SOLUTION: e felkrferf elke rf f
+
+PROBLEM: nothin workkkk
+SOLUTION: edd vr 
+SECTION: PrieR
+PROBLEM: dwsedfe wlefkef wlefnef wlkefl 
+SOLUTION: eded

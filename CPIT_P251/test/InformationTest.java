@@ -6,68 +6,116 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
+class TestFileHandler extends FileHandler {
+    List<String> testFile = new ArrayList<>(); // Simulate the file content
+
+    @Override
+    public List<String> readData() {
+        return new ArrayList<>(testFile); // Return a copy to simulate reading from a file
+    }
+
+    @Override
+    public void writeData(List<String> lines) {
+        testFile.clear(); // Clear the simulated file
+        testFile.addAll(lines); // Add new lines to the simulated file
+    }
+}
+//------------------------------------------------------------------------------------
 public class InformationTest {
-
     FileHandler fileHandler;
     Information information;
+    
+       List<String> initialData = Arrays.asList(
+        "SECTION: lamp",
+        "PROBLEM: not working",
+        "SOLUTION: Call the electrician",
+        "SECTION: printer",
+        "PROBLEM: paper jam",
+        "SOLUTION: Clear the paper path"
+    );
+    
+   @Before
+ public void setUp() throws IOException {
+    fileHandler = new TestFileHandler(); // Use the mock file handler
+    information = new Information(fileHandler); // Pass it to the Information class
+}
+//-------------------------------------------------------------
+@Test
+public void testGetSectionsAndDisplay() throws IOException {
+    System.out.println("Test: getSectionsAndDisplay");
 
-    @Before
-    public void setUp() throws IOException {
-        // Use an anonymous class to override FileHandler methods for in-memory testing
-        fileHandler = new FileHandler() {
-            private List<String> testFile = new ArrayList<>();
+    fileHandler.writeData(initialData);
 
-            @Override
-            public List<String> readData() {
-                return new ArrayList<>(testFile); // Return a copy to simulate file reading
-            }
+    // Reload lines in the existing Information instance
+    information.setContent(fileHandler.readData()); 
 
-            @Override
-            public void writeData(List<String> lines) {
-                testFile.clear(); // Clear current data
-                testFile.addAll(lines); // Simulate file write
-            }
-        };
+    // Test the method
+    List<String> sections = information.getSectionsAndDisplay();
+    List<String> expectedSections = Arrays.asList("lamp", "printer");
+    assertEquals(expectedSections, sections);
+}
+//--------------------------------------------------------------
 
-        // Create a fresh Information instance using the mocked FileHandler
-        information = new Information(fileHandler);
-    }
+@Test
+public void testAppendToSection() throws IOException {
+    System.out.println("Test: appendToSection");
+    fileHandler.writeData(initialData);
 
-    @Test
-    public void testGetSectionsAndDisplay() throws IOException {
-        System.out.println("Test: getSectionsAndDisplay");
-        List<String> initialData = new ArrayList<>();
-        initialData.add("SECTION: lamp");
-        initialData.add("PROBLEM: not working");
-        initialData.add("SOLUTION: Call the electrician");
-        initialData.add("SECTION: prinr");
-        initialData.add("PROBLEM: paper jam");
-        initialData.add("SOLUTION: Clear the paper path");
-        fileHandler.writeData(initialData);
-        information = new Information(fileHandler);
-        List<String> sections = information.getSectionsAndDisplay();
-        List<String> expectedSections = Arrays.asList("lamp", "prinr");
-        assertEquals(expectedSections, sections);
-    }
+    information.setContent(fileHandler.readData());
+    information.setSection("lamp"); // Existing section
+    information.setProblem("flickering");
+    information.setSolution("Check and tighten the bulb"); 
 
+    // Call appendToSection
+    information.appendToSection();
+
+    // Expected data after appending
+    List<String> expectedData = Arrays.asList(
+        "SECTION: lamp",
+        "PROBLEM: not working",
+        "SOLUTION: Call the electrician",
+        "PROBLEM: flickering",
+        "SOLUTION: Check and tighten the bulb",
+        "SECTION: printer",
+        "PROBLEM: paper jam",
+        "SOLUTION: Clear the paper path"
+    );
+
+    // Verify that the lines now match the expected result
+    List<String> actualData = information.getContent(); // Use the `lines` field directly
+    assertEquals(expectedData, actualData);
+}
+
+//-------------------------------------------------------------------------------
     @Test
     public void testCreateNewSection() throws IOException {
         System.out.println("Test: createNewSection");
-        //  fileHandler.writeData(new ArrayList<>()); 
-        information = new Information(fileHandler);
-        information.section = "prin";
-        information.problem = "paper jam";
-        information.solution = "Clear the paper path";
+     
+        information.setContent(fileHandler.readData());
+        information.setSection("prin");
+        information.setProblem("paper jam");
+        information.setSolution("Clear the paper path");
         information.createNewSection();
         List<String> expectedLines = Arrays.asList(
                 "SECTION: prin",
                 "PROBLEM: paper jam",
                 "SOLUTION: Clear the paper path"
         );
-        List<String> actualLines = information.lines;
-        assertEquals("The new section was not created correctly.", expectedLines, actualLines);
+        List<String> actualLines = information.getContent();
+        assertEquals( expectedLines, actualLines);
     }
+    //--------------------------------------------------------------
+    @Test
+public void testFindMatchingSectionNoMatch() {
+    List<String> sections = Arrays.asList("lamp", "printer", "router");
+    String inputSection = "monitor";
+
+    String matchedSection = information.findMatchingSection(sections, inputSection);
+    assertNull(matchedSection); // Ensure no match is found
+}
+
 
 //-------------------------------------------------------------------------------------------------
     @Test

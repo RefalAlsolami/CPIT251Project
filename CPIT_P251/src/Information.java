@@ -6,51 +6,52 @@ import java.util.Scanner;
 
 public class Information {
 
-    private FileHandler fileHandler;
-    String section;
-    String problem;
-    String solution;
-    List<String> lines;
+   private FileHandler fileHandler;
+   private String section;
+   private String problem;
+   private String solution;
+   private List<String> content;
     Scanner scanner;
 
     // Constructorlines
-    public Information(FileHandler fileHandler) throws IOException {
+ public Information(FileHandler fileHandler) throws IOException {
         this.fileHandler = fileHandler;
-        this.lines = fileHandler.readData();
+        this.content = fileHandler.readData();
         scanner = new Scanner(System.in);
     }
-
-    // Add new information using append
+    
+    
+    
     public void addInformation() throws IOException {
+    // Display existing sections
+    List<String> sections = getSectionsAndDisplay();
 
-        // Display existing sections
-        List<String> sections = getSectionsAndDisplay();
+    // Collect user input
+    collectUserInput();
 
-        // Get admin input
-        System.out.print("Enter Section: ");
-        section = scanner.nextLine();
-        System.out.print("Enter Problem: ");
-        problem = scanner.nextLine();
-        System.out.print("Enter Solution: ");
-        solution = scanner.nextLine();
+    // Check for similar section
+    String matchedSection = findMatchingSection(sections, section);
 
-        // Check if section exists and delegate accordingly
-        if (sections.contains(section)) {
-            appendToSection();
-        } else {
-            createNewSection();
-        }
-
-        // Write updated content back to the file
-        fileHandler.writeData(lines);
-        System.out.println("Information added successfully!");
+    // Use the matched section if found, otherwise create a new section
+    if (matchedSection != null) {
+        System.out.println("Section found: " + matchedSection);
+        section = matchedSection; // Use the matched section name
+        appendToSection();
+    } else {
+        System.out.println("No similar section found. Creating a new section.");
+        createNewSection();
     }
 
-    // Helper method: Get and display sections
+    // Write updated content back to the file
+    fileHandler.writeData(content);
+    System.out.println("Information added successfully!");
+}
+ //---------------------------------------------------------------
+     //Get and display sections
     public List<String> getSectionsAndDisplay() {
         List<String> sections = new ArrayList<>();
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (int i = 0; i < content.size(); i++) {
+            String line = content.get(i);
             if (line.startsWith("SECTION:")) {
                 sections.add(line.substring("SECTION:".length()).trim());
             }
@@ -66,33 +67,54 @@ public class Information {
 
         return sections;
     }
-
+//--------------------------------------------------------------------
+    public void collectUserInput() {
+    System.out.print("Enter Section: ");
+    section = scanner.nextLine();
+    System.out.print("Enter Problem: ");
+    problem = scanner.nextLine();
+    System.out.print("Enter Solution: ");
+    solution = scanner.nextLine();
+}
+  //------------------------------------------------------------  
+    
+    
+public String findMatchingSection(List<String> sections, String inputSection) {
+    for (int i = 0; i < sections.size(); i++) {
+        String existingSection = sections.get(i); 
+        if (isSimilar(existingSection, inputSection)) {
+            return existingSection; // Return the matching section
+        }
+    }
+    return null; // No match found
+} 
+//-----------------------------------------------------------------------
     // Append new information to an existing section
-    void appendToSection() {
-        System.out.println("Section exists. Appending problem and solution to it.");
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).equals("SECTION: " + section)) {
+    public void appendToSection() {
+        for (int i = 0; i < content.size(); i++) {
+            if (content.get(i).equals("SECTION: " + section)) {
                 int insertIndex = i + 1;
-                while (insertIndex < lines.size() && !lines.get(insertIndex).startsWith("SECTION:")) {
+                while (insertIndex < content.size() && !content.get(insertIndex).startsWith("SECTION:")) {
                     insertIndex++;
                 }
-                lines.add(insertIndex, "PROBLEM: " + problem);
-                lines.add(insertIndex + 1, "SOLUTION: " + solution);
+                content.add(insertIndex, "PROBLEM: " + problem);
+                content.add(insertIndex + 1, "SOLUTION: " + solution);
                 break;
             }
         }
     }
-
+//----------------------------------------------------------------------
     // Create a new section
     public void createNewSection() {
         System.out.println("Section does not exist. Creating a new section.");
-        if (!lines.isEmpty()) {
-            lines.add(""); // Add spacing between sections
+        if (!content.isEmpty()) {
+            content.add(""); // Add spacing between sections
         }
-        lines.add("SECTION: " + section);
-        lines.add("PROBLEM: " + problem);
-        lines.add("SOLUTION: " + solution);
+        content.add("SECTION: " + section);
+        content.add("PROBLEM: " + problem);
+        content.add("SOLUTION: " + solution);
     }
+//------------------------------------------------------------------------
     // Update a solution
 
     public void updateOrDeleteSolution() throws IOException {
@@ -133,7 +155,7 @@ public class Information {
 
         for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
             String currentProblem = lines.get(i).substring("PROBLEM: ".length());
-            if (isSimilarSimple(currentProblem, problem)) {
+            if (isSimilar(currentProblem, problem)) {
                 lines.remove(i);
                 lines.remove(i);
                 isChanged = true;
@@ -156,7 +178,7 @@ public class Information {
 
         for (int i = startIndex; i < lines.size() && !lines.get(i).startsWith("SECTION:"); i++) {
             String currentProblem = lines.get(i).substring("PROBLEM: ".length());
-            if (isSimilarSimple(currentProblem, problem)) {
+            if (isSimilar(currentProblem, problem)) {
                 lines.set(i + 1, "SOLUTION: " + newSolution);
                 isChanged = true;
                 System.out.println("Solution updated successfully!");
@@ -171,7 +193,7 @@ public class Information {
         }
     }
 
-    private boolean isSimilarSimple(String text1, String text2) {
+    private boolean isSimilar(String text1, String text2) {
         text1 = text1.toLowerCase().trim().replaceAll("\\s+", "");
         text2 = text2.toLowerCase().trim().replaceAll("\\s+", "");
 
@@ -201,8 +223,8 @@ public class Information {
         String currentSolution = null;
         boolean found = false;
 
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (int i = 0; i < content.size(); i++) {
+            String line = content.get(i);
 
             if (line.startsWith("SECTION:")) {
                 currentSection = line.substring("SECTION:".length()).trim();
@@ -252,4 +274,51 @@ public class Information {
         }
     }
 
+  public FileHandler getFileHandler() {
+        return fileHandler;
+    }
+
+    public void setFileHandler(FileHandler fileHandler) {
+        this.fileHandler = fileHandler;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public List<String> getContent() {
+        return content;
+    }
+
+    public void setContent(List<String> lines) {
+        this.content = lines;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
+    }  
 }
