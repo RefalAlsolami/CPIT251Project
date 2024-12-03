@@ -160,26 +160,20 @@ public class Information {
     }
 
     public boolean deleteProblem(String section, String problem) throws IOException {
-        int sectionIndex = content.indexOf("SECTION: " + section);
-        if (sectionIndex == -1) {
-            return false; // Section not found
-        }
-
         boolean isChanged = false;
-        for (int i = sectionIndex + 1; i < content.size() && !content.get(i).startsWith("SECTION:"); i++) {
-            if (content.get(i).startsWith("PROBLEM: ")) {
-                String currentProblem = content.get(i).substring("PROBLEM: ".length()).trim();
-                if (isSimilar(currentProblem, problem)) {
-                    content.remove(i); // Remove problem
-                    if (i < content.size() && content.get(i).startsWith("SOLUTION:")) {
-                        content.remove(i); // Remove corresponding solution
+        for (int i = 0; i < content.size(); i++) {
+            if (isSimilar(content.get(i), "SECTION: " + section)) {
+                for (int j = i + 1; j < content.size() && !content.get(j).startsWith("SECTION:"); j++) {
+                    if (isSimilar(content.get(j), "PROBLEM: " + problem)) {
+                        content.remove(j); // Remove problem
+                        content.remove(j); // Remove solution
+                        isChanged = true;
+                        break;
                     }
-                    isChanged = true;
-                    break;
                 }
+                break;
             }
         }
-
         if (isChanged) {
             fileHandler.writeData(content);
         }
@@ -187,43 +181,37 @@ public class Information {
     }
 
     public boolean updateSolution(String section, String problem, String newSolution) throws IOException {
-        int sectionIndex = content.indexOf("SECTION: " + section);
-        if (sectionIndex == -1) {
-            return false; // Section not found
-        }
-
         boolean isChanged = false;
-        for (int i = sectionIndex + 1; i < content.size() && !content.get(i).startsWith("SECTION:"); i++) {
-            if (content.get(i).startsWith("PROBLEM: ")) {
-                String currentProblem = content.get(i).substring("PROBLEM: ".length()).trim();
-                if (isSimilar(currentProblem, problem)) {
-                    if (i + 1 < content.size() && content.get(i + 1).startsWith("SOLUTION:")) {
-                        content.set(i + 1, "SOLUTION: " + newSolution); // Update solution
+        for (int i = 0; i < content.size(); i++) {
+            if (isSimilar(content.get(i), "SECTION: " + section)) {
+                for (int j = i + 1; j < content.size() && !content.get(j).startsWith("SECTION:"); j++) {
+                    if (isSimilar(content.get(j), "PROBLEM: " + problem)) {
+                        content.set(j + 1, "SOLUTION: " + newSolution);
                         isChanged = true;
                         break;
                     }
                 }
+                break;
             }
         }
-
         if (isChanged) {
             fileHandler.writeData(content);
         }
         return isChanged;
     }
 
-    public boolean isSimilar(String text1, String text2) {
-        text1 = text1.toLowerCase().trim().replaceAll("\\s+", "");
-        text2 = text2.toLowerCase().trim().replaceAll("\\s+", "");
+    public boolean isSimilar(String text, String userInput) {
+        text = text.toLowerCase().trim().replaceAll("\\s+", "");
+        userInput = userInput.toLowerCase().trim().replaceAll("\\s+", "");
 
         // Calculate the minimum length of both strings
-        int minLength = Math.min(text1.length(), text2.length());
-        int maxLength = Math.max(text1.length(), text2.length());
+        int minLength = Math.min(text.length(), userInput.length());
+        int maxLength = Math.max(text.length(), userInput.length());
         int matchCount = 0;
 
         // Compare each character up to the length of the shorter string
         for (int i = 0; i < minLength; i++) {
-            if (text1.charAt(i) == text2.charAt(i)) {
+            if (text.charAt(i) == userInput.charAt(i)) {
                 matchCount++;
             }
         }
@@ -232,7 +220,7 @@ public class Information {
         double similarity = (double) matchCount / maxLength;
 
         // Return true if the similarity is above a threshold, say 60%
-        return similarity > 0.6;
+        return similarity > 0.5;
     }
 
     //------------------------------------------------------------------------------------
