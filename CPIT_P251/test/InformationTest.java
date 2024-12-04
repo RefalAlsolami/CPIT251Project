@@ -200,27 +200,6 @@ public class InformationTest {
     }
 
 //------------------------------------------------------------------------------------------
-    @Test
-    public void testSearchWithNonExistingKeyword() throws IOException {
-        System.out.println("Test: Search with non-existing Keyword");
-
-        FileHandler fileHandler = new FileHandler() {
-            @Override
-            public List<String> readData() {
-                return Arrays.asList();
-            }
-        };
-
-        Information instance = new Information(fileHandler);
-        String keyword = "not found";
-        instance.search(keyword);
-
-        List<String> actualData = fileHandler.readData();
-        List<String> expectedData = Arrays.asList();
-
-        assertEquals(expectedData, actualData);
-    }
-
 //-----------------------------------------------------------------------------------------
     @Test
     public void testPrintAllInformation() throws IOException {
@@ -277,6 +256,70 @@ public class InformationTest {
 
         // Verify that the data in the file matches the large dataset
         assertEquals("The file content should match the large dataset.", largeFileData, fileHandler.readData());
+    }
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testSearchWithNonExistingKeyword() throws IOException {
+        System.out.println("Test: Search for a non-existing keyword");
+
+        fileHandler.writeData(initialData);
+
+        String keyword = "nonexistent";
+        information.search(keyword);
+
+        assertEquals(initialData, fileHandler.readData());
+    }
+
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testSearchWithExistingKeyword() throws IOException {
+        System.out.println("Test: Search for an existing keyword");
+
+        fileHandler.writeData(initialData);
+
+        String keyword = "electrician";
+        information.search(keyword);
+
+        assertEquals(initialData, fileHandler.readData());
+    }
+
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testSearchCaseInsensitive() throws IOException {
+        System.out.println("Test: Case-insensitive search");
+
+        fileHandler.writeData(initialData);
+
+        String keyword = "ElEcTrIcIaN";
+        information.search(keyword);
+
+        assertEquals(initialData, fileHandler.readData());
+    }
+
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testSearchInEmptyFile() throws IOException {
+        System.out.println("Test: Search in an empty file");
+
+        fileHandler.writeData(new ArrayList<>());
+
+        String keyword = "anything";
+        information.search(keyword);
+
+        assertTrue(fileHandler.readData().isEmpty());
+    }
+
+//-----------------------------------------------------------------------------------------
+    @Test
+    public void testSearchWithSubstringKeyword() throws IOException {
+        System.out.println("Test: Search for a substring keyword");
+
+        fileHandler.writeData(initialData);
+
+        String keyword = "work";
+        information.search(keyword);
+
+        assertEquals(initialData, fileHandler.readData());
     }
 
 }
