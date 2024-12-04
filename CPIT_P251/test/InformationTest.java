@@ -44,7 +44,7 @@ public class InformationTest {
         information = new Information(fileHandler); // Pass it to the Information class
     }
 
-//-------------------------------------------------------------
+//------------------------------------------------------------------------------------
     @Test
     public void testGetSectionsAndDisplay() throws IOException {
         System.out.println("Test: getSectionsAndDisplay");
@@ -59,7 +59,7 @@ public class InformationTest {
         List<String> expectedSections = Arrays.asList("lamp", "printer");
         assertEquals(expectedSections, sections);
     }
-//--------------------------------------------------------------
+//------------------------------------------------------------------------------------
 
     @Test
     public void testAppendToSection() throws IOException {
@@ -110,7 +110,7 @@ public class InformationTest {
         assertEquals(expectedLines, actualLines);
     }
 
-    //--------------------------------------------------------------
+//------------------------------------------------------------------------------------
     @Test
     public void testFindMatchingSectionNoMatch() {
         List<String> sections = Arrays.asList("lamp", "printer", "router");
@@ -131,11 +131,9 @@ public class InformationTest {
 
         boolean result = information.deleteProblem(section, problem);
 
-       
         assertTrue("The problem and solution should be deleted", result);
         assertFalse("The problem should not exist",
                 information.getContent().contains("PROBLEM: not working"));
-
 
         List<String> expectedData = Arrays.asList(
                 "SECTION: lamp",
@@ -151,13 +149,11 @@ public class InformationTest {
         String section = "lamp";
         String problem = "non-existent problem";
 
-        
         fileHandler.writeData(initialData);
         information.setContent(fileHandler.readData());
 
         boolean result = information.deleteProblem(section, problem);
 
-        
         assertFalse("No changes should be made for non-existing problems", result);
         assertEquals("The content should remain unchanged", initialData, information.getContent());
     }
@@ -168,18 +164,15 @@ public class InformationTest {
         String problem = "not working";
         String newSolution = "Replace the bulb";
 
-        
         fileHandler.writeData(initialData);
         information.setContent(fileHandler.readData());
 
         boolean result = information.updateSolution(section, problem, newSolution);
 
-       
         assertTrue("The solution should be updated", result);
         assertTrue("The updated solution should exist",
                 information.getContent().contains("SOLUTION: Replace the bulb"));
 
-        
         List<String> expectedData = Arrays.asList(
                 "SECTION: lamp",
                 "PROBLEM: not working",
@@ -197,19 +190,16 @@ public class InformationTest {
         String problem = "non-existent problem";
         String newSolution = "Restart everything";
 
-       
         fileHandler.writeData(initialData);
         information.setContent(fileHandler.readData());
 
         boolean result = information.updateSolution(section, problem, newSolution);
 
-        
         assertFalse("No changes should be made for non-existing problems", result);
         assertEquals("The content should remain unchanged", initialData, information.getContent());
     }
 
 //------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
     @Test
     public void testSearchWithNonExistingKeyword() throws IOException {
         System.out.println("Test: Search with non-existing Keyword");

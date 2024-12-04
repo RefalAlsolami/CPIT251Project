@@ -18,6 +18,7 @@ public class FileHandler {
             System.err.println("Error initializing the file: " + e.getMessage());
         }
     }
+
     // Read all data from the file method
     public List<String> readData() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -31,12 +32,12 @@ public class FileHandler {
     }
 
     // Write all data to the file (overwrites the file) method
-    public void writeData(List<String> lines) {
+    public void writeData(List<String> content) {
         try {
             FileWriter fileWriter = new FileWriter(fileName, false); // false to overwrite
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-            for (String line : lines) {
+            for (String line : content) {
                 bufferedWriter.write(line);
                 bufferedWriter.newLine(); // New line for each entry
             }
