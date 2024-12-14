@@ -7,7 +7,6 @@ public class FileHandler {
 
     private String fileName = "data.txt";
 
-    // Constructor
     public FileHandler() {
         try {
             File file = new File(fileName);
@@ -31,7 +30,7 @@ public class FileHandler {
         return content;
     }
 
-    // Write all data to the file (overwrites the file) method
+    // Write all data to the file
     public void writeData(List<String> content) {
         try {
             FileWriter fileWriter = new FileWriter(fileName, false); // false to overwrite
@@ -39,7 +38,7 @@ public class FileHandler {
 
             for (String line : content) {
                 bufferedWriter.write(line);
-                bufferedWriter.newLine(); // New line for each entry
+                bufferedWriter.newLine();
             }
 
             bufferedWriter.close();

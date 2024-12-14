@@ -26,7 +26,7 @@ public class Information {
         // Display existing sections
         List<String> sections = getSectionsAndDisplay();
 
-        // Collect user input 
+       
         collectUserInput();
 
         // Check for similar section
@@ -118,9 +118,9 @@ public class Information {
         content.add("SOLUTION: " + solution);
     }
     //------------------------------------------------------------------------
-    // Update and Delete Information
+    // Update Information
 
-    public void updateOrDeleteSolution() throws IOException {
+    public void updateSolution() throws IOException {
         List<String> sections = getSectionsAndDisplay();
         System.out.print("Enter Section: ");
         section = scanner.nextLine();
@@ -131,56 +131,19 @@ public class Information {
         }
 
         System.out.print("Enter Problem to modify: ");
-        String problem = scanner.nextLine();
+        String problemToUpdate = scanner.nextLine();
 
-        System.out.println("Do you want to update or delete the problem? (Enter 'update' or 'delete')");
-        String action = scanner.nextLine().toLowerCase();
+        System.out.print("Enter new Solution: ");
+        String newSolution = scanner.nextLine();
 
-        switch (action) {
-            case "delete":
-                if (deleteProblem(section, problem)) {
-                    System.out.println("Problem and solution deleted successfully!");
-                } else {
-                    System.out.println("Problem not found. Deletion failed.");
-                }
-                break;
-            case "update":
-                System.out.print("Enter new Solution: ");
-                String newSolution = scanner.nextLine();
-                if (updateSolution(section, problem, newSolution)) {
-                    System.out.println("Solution updated successfully!");
-                } else {
-                    System.out.println("Problem not found. Update failed.");
-                }
-                break;
-            default:
-                System.out.println("Invalid action. Please enter 'update' or 'delete'.");
-                break;
+        if (updateSolutionInContent(section, problemToUpdate, newSolution)) {
+            System.out.println("Solution updated successfully!");
+        } else {
+            System.out.println("Problem not found. Update failed.");
         }
     }
 
-    public boolean deleteProblem(String section, String problem) throws IOException {
-        boolean isChanged = false;
-        for (int i = 0; i < content.size(); i++) {
-            if (isSimilar(content.get(i), "SECTION: " + section)) {
-                for (int j = i + 1; j < content.size() && !content.get(j).startsWith("SECTION:"); j++) {
-                    if (isSimilar(content.get(j), "PROBLEM: " + problem)) {
-                        content.remove(j); // Remove problem
-                        content.remove(j); // Remove solution
-                        isChanged = true;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        if (isChanged) {
-            fileHandler.writeData(content);
-        }
-        return isChanged;
-    }
-
-    public boolean updateSolution(String section, String problem, String newSolution) throws IOException {
+    public boolean updateSolutionInContent(String section, String problem, String newSolution) throws IOException {
         boolean isChanged = false;
         for (int i = 0; i < content.size(); i++) {
             if (isSimilar(content.get(i), "SECTION: " + section)) {
@@ -219,8 +182,8 @@ public class Information {
         // Calculate similarity based on the number of matching characters and the maximum length
         double similarity = (double) matchCount / maxLength;
 
-        // Return true if the similarity is above a threshold, say 60%
-        return similarity > 0.5;
+        // Return true if the similarity is above a threshold 70%
+        return similarity > 0.7;
     }
 
     //------------------------------------------------------------------------------------
@@ -258,12 +221,12 @@ public class Information {
         }
     }
 
-    // check if the keyword is in the text (case-insensitive)
+    // check if the keyword is in the text 
     private boolean containsKeyword(String text, String keyword) {
         return text != null && text.toLowerCase().contains(keyword.toLowerCase());
     }
 
-    //highlight the keyword in the text
+    
     private String highlightKeyword(String text, String keyword) {
         if (text == null) {
             return "";
@@ -282,7 +245,7 @@ public class Information {
                 break;
             }
 
-            // Append text before the keyword
+            
             highlightedText.append(text.substring(index, keywordStart));
             // Append the highlighted keyword
             highlightedText.append(keyword.toUpperCase());

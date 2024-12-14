@@ -122,81 +122,62 @@ public class InformationTest {
 
 //-------------------------------------------------------------------------------------------------
     @Test
-    public void testDeleteExistingProblem() throws IOException {
-        String section = "lamp";
-        String problem = "not working";
-
-        fileHandler.writeData(initialData);
-        information.setContent(fileHandler.readData());
-
-        boolean result = information.deleteProblem(section, problem);
-
-        assertTrue("The problem and solution should be deleted", result);
-        assertFalse("The problem should not exist",
-                information.getContent().contains("PROBLEM: not working"));
-
-        List<String> expectedData = Arrays.asList(
-                "SECTION: lamp",
-                "SECTION: printer",
-                "PROBLEM: paper jam",
-                "SOLUTION: Clear the paper path"
-        );
-        assertEquals("The content should match after deletion", expectedData, information.getContent());
-    }
-
-    @Test
-    public void testDeleteNonExistingProblem() throws IOException {
-        String section = "lamp";
-        String problem = "non-existent problem";
-
-        fileHandler.writeData(initialData);
-        information.setContent(fileHandler.readData());
-
-        boolean result = information.deleteProblem(section, problem);
-
-        assertFalse("No changes should be made for non-existing problems", result);
-        assertEquals("The content should remain unchanged", initialData, information.getContent());
-    }
-
-    @Test
-    public void testUpdateExistingSolution() throws IOException {
-        String section = "lamp";
-        String problem = "not working";
-        String newSolution = "Replace the bulb";
-
-        fileHandler.writeData(initialData);
-        information.setContent(fileHandler.readData());
-
-        boolean result = information.updateSolution(section, problem, newSolution);
-
-        assertTrue("The solution should be updated", result);
-        assertTrue("The updated solution should exist",
-                information.getContent().contains("SOLUTION: Replace the bulb"));
-
-        List<String> expectedData = Arrays.asList(
+    public void testUpdateExistingProblem() throws IOException {
+        List<String> initialData = Arrays.asList(
                 "SECTION: lamp",
                 "PROBLEM: not working",
-                "SOLUTION: Replace the bulb",
-                "SECTION: printer",
-                "PROBLEM: paper jam",
-                "SOLUTION: Clear the paper path"
+                "SOLUTION: Call the electrician"
         );
-        assertEquals("The content should match after update", expectedData, information.getContent());
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
+
+        boolean result = information.updateSolutionInContent("lamp", "not working", "Replace the bulb");
+
+        assertTrue(result);
+        assertTrue(information.getContent().contains("SOLUTION: Replace the bulb"));
     }
 
     @Test
     public void testUpdateNonExistingProblem() throws IOException {
-        String section = "lamp";
-        String problem = "non-existent problem";
-        String newSolution = "Restart everything";
-
+        List<String> initialData = Arrays.asList(
+                "SECTION: lamp",
+                "PROBLEM: not working",
+                "SOLUTION: Call the electrician"
+        );
         fileHandler.writeData(initialData);
         information.setContent(fileHandler.readData());
 
-        boolean result = information.updateSolution(section, problem, newSolution);
+        boolean result = information.updateSolutionInContent("lamp", "flickering", "Tighten the bulb");
 
-        assertFalse("No changes should be made for non-existing problems", result);
-        assertEquals("The content should remain unchanged", initialData, information.getContent());
+        assertFalse(result);
+        assertEquals(initialData, information.getContent());
+    }
+
+    @Test
+    public void testUpdateInNonExistingSection() throws IOException {
+        List<String> initialData = Arrays.asList(
+                "SECTION: printer",
+                "PROBLEM: paper jam",
+                "SOLUTION: Clear the paper path"
+        );
+        fileHandler.writeData(initialData);
+        information.setContent(fileHandler.readData());
+
+        boolean result = information.updateSolutionInContent("scanner", "not scanning", "Reconnect the device");
+
+        assertFalse(result);
+        assertEquals(initialData, information.getContent());
+    }
+
+    @Test
+    public void testUpdateWithEmptyContent() throws IOException {
+        fileHandler.writeData(Arrays.asList());
+        information.setContent(fileHandler.readData());
+
+        boolean result = information.updateSolutionInContent("lamp", "not working", "Replace the bulb");
+
+        assertFalse(result);
+        assertTrue(information.getContent().isEmpty());
     }
 
 //------------------------------------------------------------------------------------------
@@ -258,6 +239,7 @@ public class InformationTest {
         assertEquals("The file content should match the large dataset.", largeFileData, fileHandler.readData());
     }
 //-----------------------------------------------------------------------------------------
+
     @Test
     public void testSearchWithNonExistingKeyword() throws IOException {
         System.out.println("Test: Search for a non-existing keyword");

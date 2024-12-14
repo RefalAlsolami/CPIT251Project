@@ -28,7 +28,7 @@ public class Project_CPIT251_Group3 {
 
             try {
                 choice = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1: // Add new information (Admin only)
@@ -42,7 +42,7 @@ public class Project_CPIT251_Group3 {
                     case 2: // Update a solution (Admin only)
                         if (admin.authorize(scanner)) {
                             try {
-                                information.updateOrDeleteSolution();  // Assuming this method exists in Information
+                                information.updateSolution();
                             } catch (IOException e) {
                                 System.out.println("An error occurred while updating the solution: " + e.getMessage());
                             }
@@ -70,7 +70,7 @@ public class Project_CPIT251_Group3 {
                 }
             } catch (java.util.InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid integer.");
-                scanner.nextLine(); // Clear the invalid input from the scanner
+                scanner.nextLine(); 
             }
         } while (choice != 5);
 

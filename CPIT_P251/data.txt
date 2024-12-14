@@ -1,6 +1,6 @@
 SECTION: PC
 PROBLEM: Not working
-SOLUTION: restart the pc
+SOLUTION: restart the pc 
 PROBLEM: Slow performance
 SOLUTION: Run a disk cleanup and uninstall unused programs
 PROBLEM: Blue screen error

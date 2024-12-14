@@ -3,16 +3,14 @@ import java.util.Scanner;
 
 public class Admin {
 
-    private String adminID = "22";
+    private String adminID = "AA";
     private String adminPassword = "123";
 
-    // Constructor
     public Admin() {
         this.adminID = adminID;
         this.adminPassword = adminPassword;
     }
 
-    // Check if the user is an admin
     public boolean isAdmin(String inputID, String inputPassword) {
         return this.adminID.equals(inputID) && this.adminPassword.equals(inputPassword);
     }
