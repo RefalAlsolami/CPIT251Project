@@ -28,4 +28,6 @@ SOLUTION: Check the language settings
 
 SECTION: Monitor
 PROBLEM: No display
-SOLUTION: Try another Monitor
+SOLUTION: Check cables and power
+PROBLEM: Screen flickering
+SOLUTION: Adjust refresh rate or update graphics driver
