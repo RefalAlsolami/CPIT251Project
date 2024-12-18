@@ -226,13 +226,11 @@ public class Information {
             System.out.println("No matching keyword found in the file.");
         }
     }
-
     //------------------------------------------------------------------------------------
     // check if the keyword is in the text 
     private boolean containsKeyword(String text, String keyword) {
         return text != null && text.toLowerCase().contains(keyword.toLowerCase());
     }
-
     //------------------------------------------------------------------------------------
     private String highlightKeyword(String text, String keyword) {
         if (text == null) {
@@ -247,18 +245,14 @@ public class Information {
         while (index < text.length()) {
             int keywordStart = lowerText.indexOf(lowerKeyword, index);
             if (keywordStart == -1) {
-                // Append the remaining part of the text
                 highlightedText.append(text.substring(index));
                 break;
             }
 
             highlightedText.append(text.substring(index, keywordStart));
-            // Append the highlighted keyword
             highlightedText.append(keyword.toUpperCase());
-            // Move the index to after the keyword
             index = keywordStart + keyword.length();
         }
-
         return highlightedText.toString();
     }
 
@@ -275,7 +269,6 @@ public class Information {
             }
         }
     }
-
     //------------------------------------------------------------------------------------
     // Getter and Setter
     public FileHandler getFileHandler() {
