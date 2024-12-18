@@ -2,12 +2,8 @@ SECTION: PC
 PROBLEM: Not working
 SOLUTION: restart the pc 
 PROBLEM: Slow performance
-SOLUTION: Run a disk cleanup and uninstall unused programs
-PROBLEM: Blue screen error
-SOLUTION: Update the drivers and check for hardware issues
+SOLUTION: clean the disk
 
-PROBLEM: not working
-SOLUTION: restart the pc
 SECTION: Email
 PROBLEM: Not receiving emails
 SOLUTION: Check spam folder and inbox storage
@@ -28,8 +24,8 @@ SECTION: Keyboard
 PROBLEM: Keys not responding
 SOLUTION: Reconnect the keyboard and clean underneath the keys
 PROBLEM: Wrong characters appearing
-SOLUTION: Check the language settings and keyboard layout
+SOLUTION: Check the language settings
 
 SECTION: Monitor
 PROBLEM: No display
-SOLUTION: Try another cable or monitor 
+SOLUTION: Try another Monitor

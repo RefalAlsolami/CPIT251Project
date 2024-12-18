@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Information {
 
+    private String adminID;
     private FileHandler fileHandler;
     private String section;
     private String problem;
@@ -19,15 +20,19 @@ public class Information {
         this.content = fileHandler.readData();
         scanner = new Scanner(System.in);
     }
+
     //------------------------------------------------------------------------------------
     //Add Information
-
-    public void addInformation() throws IOException {
+    public void addInformation(String adminID) throws IOException {
         // Display existing sections
         List<String> sections = getSectionsAndDisplay();
 
-       
-        collectUserInput();
+        System.out.print("Enter Section: ");
+        section = scanner.nextLine();
+        System.out.print("Enter Problem: ");
+        problem = scanner.nextLine();
+        System.out.print("Enter Solution: ");
+        solution = scanner.nextLine();;
 
         // Check for similar section
         String matchedSection = findMatchingSection(sections, section);
@@ -44,21 +49,12 @@ public class Information {
 
         // Write updated content back to the file
         fileHandler.writeData(content);
-        System.out.println("Information added successfully!");
+        System.out.println("Information added successfully by Admin ID: " + adminID);
+
     }
 
-    //---------------------------------------------------------------
-    public void collectUserInput() {
-        System.out.print("Enter Section: ");
-        section = scanner.nextLine();
-        System.out.print("Enter Problem: ");
-        problem = scanner.nextLine();
-        System.out.print("Enter Solution: ");
-        solution = scanner.nextLine();
-    }
     //---------------------------------------------------------------
     //Get and display sections
-
     public List<String> getSectionsAndDisplay() {
         List<String> sections = new ArrayList<>();
         for (int i = 0; i < content.size(); i++) {
@@ -89,25 +85,33 @@ public class Information {
         }
         return null; // No match found
     }
+
     //-----------------------------------------------------------------------
     // Append new information to an existing section
-
     public void appendToSection() {
         for (int i = 0; i < content.size(); i++) {
+            // Check if the current line matches the specified section
             if (content.get(i).equals("SECTION: " + section)) {
                 int insertIndex = i + 1;
-                while (insertIndex < content.size() && !content.get(insertIndex).startsWith("SECTION:")) {
+
+                // Find the correct position (before the empty line or the next section)
+                while (insertIndex < content.size()
+                        && !content.get(insertIndex).startsWith("SECTION:")
+                        && !content.get(insertIndex).trim().isEmpty()) {
                     insertIndex++;
                 }
+
+                // Add the problem and solution before the empty line
                 content.add(insertIndex, "PROBLEM: " + problem);
                 content.add(insertIndex + 1, "SOLUTION: " + solution);
-                break;
+
+                break; // Exit after insertion
             }
         }
     }
+
     //----------------------------------------------------------------------
     // Create a new section
-
     public void createNewSection() {
         System.out.println("Section does not exist. Creating a new section.");
         if (!content.isEmpty()) {
@@ -117,10 +121,10 @@ public class Information {
         content.add("PROBLEM: " + problem);
         content.add("SOLUTION: " + solution);
     }
+
     //------------------------------------------------------------------------
     // Update Information
-
-    public void updateSolution() throws IOException {
+    public void updateSolution(String adminID) throws IOException {
         List<String> sections = getSectionsAndDisplay();
         System.out.print("Enter Section: ");
         section = scanner.nextLine();
@@ -137,12 +141,13 @@ public class Information {
         String newSolution = scanner.nextLine();
 
         if (updateSolutionInContent(section, problemToUpdate, newSolution)) {
-            System.out.println("Solution updated successfully!");
+            System.out.println("Solution updated successfully by Admin ID: " + adminID);
         } else {
             System.out.println("Problem not found. Update failed.");
         }
     }
 
+    //------------------------------------------------------------------------------------
     public boolean updateSolutionInContent(String section, String problem, String newSolution) throws IOException {
         boolean isChanged = false;
         for (int i = 0; i < content.size(); i++) {
@@ -163,6 +168,7 @@ public class Information {
         return isChanged;
     }
 
+    //------------------------------------------------------------------------------------
     public boolean isSimilar(String text, String userInput) {
         text = text.toLowerCase().trim().replaceAll("\\s+", "");
         userInput = userInput.toLowerCase().trim().replaceAll("\\s+", "");
@@ -221,12 +227,13 @@ public class Information {
         }
     }
 
+    //------------------------------------------------------------------------------------
     // check if the keyword is in the text 
     private boolean containsKeyword(String text, String keyword) {
         return text != null && text.toLowerCase().contains(keyword.toLowerCase());
     }
 
-    
+    //------------------------------------------------------------------------------------
     private String highlightKeyword(String text, String keyword) {
         if (text == null) {
             return "";
@@ -245,7 +252,6 @@ public class Information {
                 break;
             }
 
-            
             highlightedText.append(text.substring(index, keywordStart));
             // Append the highlighted keyword
             highlightedText.append(keyword.toUpperCase());
@@ -257,8 +263,8 @@ public class Information {
     }
 
     //------------------------------------------------------------------------------------
-    // Print all information from the file
-    public void printAllInformation() throws IOException {
+    // Display all information from the file
+    public void displayAllInformation() throws IOException {
         // Check if the file is empty
         if (content.isEmpty()) {
             System.out.println("The file is empty. No information available to display.");
@@ -269,9 +275,9 @@ public class Information {
             }
         }
     }
-    //------------------------------------------------------------------------------------
-    //Getter-Setter Methods
 
+    //------------------------------------------------------------------------------------
+    // Getter and Setter
     public FileHandler getFileHandler() {
         return fileHandler;
     }
@@ -308,8 +314,8 @@ public class Information {
         return content;
     }
 
-    public void setContent(List<String> lines) {
-        this.content = lines;
+    public void setContent(List<String> content) {
+        this.content = content;
     }
 
     public Scanner getScanner() {
@@ -319,4 +325,5 @@ public class Information {
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
     }
+
 }

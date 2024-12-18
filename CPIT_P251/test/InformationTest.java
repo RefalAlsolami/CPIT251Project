@@ -136,6 +136,7 @@ public class InformationTest {
         assertTrue(result);
         assertTrue(information.getContent().contains("SOLUTION: Replace the bulb"));
     }
+//-------------------------------------------------------------------------------------------------
 
     @Test
     public void testUpdateNonExistingProblem() throws IOException {
@@ -152,6 +153,7 @@ public class InformationTest {
         assertFalse(result);
         assertEquals(initialData, information.getContent());
     }
+//-------------------------------------------------------------------------------------------------
 
     @Test
     public void testUpdateInNonExistingSection() throws IOException {
@@ -168,6 +170,7 @@ public class InformationTest {
         assertFalse(result);
         assertEquals(initialData, information.getContent());
     }
+//-------------------------------------------------------------------------------------------------
 
     @Test
     public void testUpdateWithEmptyContent() throws IOException {
@@ -181,10 +184,9 @@ public class InformationTest {
     }
 
 //------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------
     @Test
-    public void testPrintAllInformation() throws IOException {
-        System.out.println("Test: printAllInformation");
+    public void testDisplayAllInformation() throws IOException {
+        System.out.println("Test: Display All Information");
 
         // Step 1: Write data to the mock file handler
         List<String> fileData = Arrays.asList(
@@ -195,33 +197,33 @@ public class InformationTest {
         fileHandler.writeData(fileData);
 
         // Step 2: Call the method to test
-        information.printAllInformation();
+        information.displayAllInformation();
 
         // Step 3: Verify that the data in the file matches the expected data
         assertEquals("printAllInformation executed successfully and the file content"
                 + " matches the expected data.", fileData, fileHandler.readData());
     }
-//------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------
     @Test
-    public void testPrintAllInformationEmptyFile() throws IOException {
-        System.out.println("Test: print All Information From Empty File");
+    public void testDisplayAllInformationEmptyFile() throws IOException {
+        System.out.println("Test: display All Information From Empty File");
 
         // Step 1: Write an empty list to the mock file handler to simulate an empty file
         fileHandler.writeData(new ArrayList<>());
 
         // Step 2: Call the method to test
-        information.printAllInformation();
+        information.displayAllInformation();
 
         // Step 3: Verify that the file is indeed empty
         List<String> actualData = fileHandler.readData();
         assertTrue("File should be empty", actualData.isEmpty());
     }
-//-----------------------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------------------
     @Test
-    public void testPrintAllInformationLargeFile() throws IOException {
-        System.out.println("Test: print All Information with Large Data");
+    public void testDisplayAllInformationLargeFile() throws IOException {
+        System.out.println("Test: Display All Information with Large Data");
 
         // Generate a large dataset
         List<String> largeFileData = new ArrayList<>();
@@ -233,7 +235,7 @@ public class InformationTest {
         fileHandler.writeData(largeFileData);
 
         // Call the method to test
-        information.printAllInformation();
+        information.displayAllInformation();
 
         // Verify that the data in the file matches the large dataset
         assertEquals("The file content should match the large dataset.", largeFileData, fileHandler.readData());

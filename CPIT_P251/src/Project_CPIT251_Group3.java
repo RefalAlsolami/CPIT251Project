@@ -8,22 +8,21 @@ public class Project_CPIT251_Group3 {
         Scanner scanner = new Scanner(System.in);
         FileHandler fileHandler = new FileHandler();
         Information information = new Information(fileHandler);
-        Admin admin = new Admin(); // Single admin setup
+        Admin admin = new Admin(information); // Admin object that inherits from Employee
 
         int choice = -1; // Initialize choice
         do {
             // Show menu to the user
             System.out.println();
             System.out.println("|-------------------------------------------------------------|");
-            System.out.println("|------- Welcom in Technical User Guide System (Menu) --------|");
+            System.out.println("|------- Welcome in Technical User Guide System (Menu) -------|");
             System.out.println("|-------------------------------------------------------------|");
             System.out.println("|   1. Add New Information (Admin Only)");
             System.out.println("|   2. Update a Solution (Admin Only)");
             System.out.println("|   3. Search for Information");
-            System.out.println("|   4. Print All Information");
+            System.out.println("|   4. Display All Information");
             System.out.println("|   5. Exit");
             System.out.println("|-------------------------------------------------------------|");
-            System.out.println();
             System.out.print("Enter your choice: ");
 
             try {
@@ -33,32 +32,28 @@ public class Project_CPIT251_Group3 {
                 switch (choice) {
                     case 1: // Add new information (Admin only)
                         if (admin.authorize(scanner)) {
-                            information.addInformation();
+                            admin.addInformation();
                         } else {
-                            System.out.println("Authorization failed. You are not allowed to add new information.");
+                            System.out.println("Authorization failed.");
                         }
                         break;
 
-                    case 2: // Update a solution (Admin only)
+                    case 2: // Update solution (Admin only)
                         if (admin.authorize(scanner)) {
-                            try {
-                                information.updateSolution();
-                            } catch (IOException e) {
-                                System.out.println("An error occurred while updating the solution: " + e.getMessage());
-                            }
+                            admin.updateSolution();
                         } else {
-                            System.out.println("Authorization failed. You are not allowed to update solutions.");
+                            System.out.println("Authorization failed.");
                         }
                         break;
 
-                    case 3: // Search for information
+                    case 3: // Search for information (Employee functionality)
                         System.out.print("Enter a keyword to search: ");
-                        String searchKeyword = scanner.nextLine();
-                        information.search(searchKeyword);
+                        String keyword = scanner.nextLine();
+                        admin.searchInformation(keyword); // من Employee
                         break;
 
-                    case 4: // Print all information from the file
-                        information.printAllInformation();
+                    case 4: // Display all information (Employee functionality)
+                        admin.displayAllInformation(); // من Employee
                         break;
 
                     case 5: // Exit
@@ -70,7 +65,7 @@ public class Project_CPIT251_Group3 {
                 }
             } catch (java.util.InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid integer.");
-                scanner.nextLine(); 
+                scanner.nextLine();
             }
         } while (choice != 5);
 
